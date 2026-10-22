@@ -1,0 +1,30 @@
+Patio, olive and the night's other changes (16 Oct). tools/flicker.mjs at 1728x992, DPR 2, ?steady. v8b against the page.
+
+1. One run each (frame times matched within a few ms):
+== 001 Lintel/v8b/
+1728x992 at 2x, crop 1037x635
+at      step  move    flicker  ratio   render     ms/frame
+120     0.05  1.256   2.132    1.70    3456x1984  55.2
+170     0.05  1.834   2.974    1.62    3456x1984  68.2
+1660    0.05  0.712   1.322    1.86    2434x1397  51.5
+1850    0.05  0.833   1.576    1.89    2434x1397  52.1
+frames kept in /private/tmp/claude-501/-Users-sam-Projects-Claude-Code-014-Flat-3D/a6ba32f3-59fd-4995-ad5b-68ff65f0ad70/scratchpad/fl3-v8b
+== 001 Lintel/
+1728x992 at 2x, crop 1037x635
+at      step  move    flicker  ratio   render     ms/frame
+120     0.05  1.259   2.125    1.69    3456x1984  53.4
+170     0.05  1.841   3.229    1.75    3456x1984  68.3
+1660    0.05  0.694   1.291    1.86    2434x1397  50.2
+1850    0.05  0.820   1.552    1.89    2434x1397  57.8
+frames kept in /private/tmp/claude-501/-Users-sam-Projects-Claude-Code-014-Flat-3D/a6ba32f3-59fd-4995-ad5b-68ff65f0ad70/scratchpad/fl3-now
+
+The lens view (170) read 9 percent higher: the patio's new square drawing pattern. Made lighter and quicker to fade, then
+interleaved twice at 22 ms a frame:
+== v8b/
+170     0.05  1.845   2.296    1.24    3456x1984  22.0
+== now
+170     0.05  1.823   2.288    1.26    3456x1984  22.4
+== v8b/
+170     0.05  1.843   2.297    1.25    3456x1984  22.1
+== now
+170     0.05  1.825   2.281    1.25    3456x1984  22.5

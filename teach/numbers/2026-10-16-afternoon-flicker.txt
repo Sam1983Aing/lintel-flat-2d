@@ -1,0 +1,11 @@
+Flicker after the notes of the afternoon of 16 Oct. Held: the wine room (1577), the pool (3588, its water now moves), the front (3870). Slow: through the kitchen to the table (1300), the gallery into the bedroom (2400), out of the garden (3330), from the pool past the paving that blinked (3640).
+
+1728x992 at 2x, crop 1037x635
+at      step  move    flicker  ratio   render     ms/frame
+1577    0     0.606   1.151    1.90    2434x1397  30.7
+3588    0     0.666   1.190    1.79    2434x1397  24.9
+3870    0     0.634   1.201    1.89    2434x1397  25.3
+1300    0.3   14.735  25.667   1.74    2434x1397  16.6
+2400    0.3   8.211   12.189   1.48    2434x1397  22.1
+3330    0.3   12.233  20.422   1.67    2434x1397  22.9
+3640    0.3   1.364   2.092    1.53    2434x1397  25.1

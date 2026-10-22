@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lintel · Casa Serra</title>
+  <meta name="description" content="Every house starts as a plan. A concept page for an architecture practice where the floor plan of Casa Serra becomes the house, room by room, as you walk through it." />
+  <!--
+    CREATIVE DIRECTION (iteration 2)
+    Concept     Every house starts as a plan, so the page opens on one. Then you
+                walk into it, and each room lifts off the paper as you step in.
+    Mood        precise, calm, material, quietly expensive
+    Palette     paper #efebe2, ink #1d1d1f, one accent: signal orange #f0500f with the stencil type
+                (oxide #b8452a with ?type=classic)
+    Type        Saira Stencil One (display, Sam's pick of 6 Oct, set in hero-options.js. ?type=classic is the
+                first Instrument Serif), Geist (body), Geist Mono (drawing annotations)
+    Motion      heavy Lenis scroll, a vertical dolly zoom from a 3 degree top view
+                to eye level, then a walk deep along Z, doorway by doorway
+    Signature   The plan is a real horizontal section: the house is cut at 1.2 m
+                and the cut is filled with ink (poché). Raising the cut makes the
+                walls grow out of the drawing. Each room stays ink on paper until
+                you step through its door, then the oxide line sweeps the real
+                material across it.
+  -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Saira+Stencil+One&family=Geist:wght@300;400;500&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="shared/fx-ui.css" />
+  <link rel="stylesheet" href="theme.css" />
+</head>
+<body>
+  <canvas id="gl" aria-hidden="true"></canvas>
+
+  <div class="loader" id="loader">
+    <p class="loader__place">Lintel · Arquitectura<br />Lisboa</p>
+    <div class="loader__story" aria-live="polite">
+      <p>Every house we have built began as a plan.</p>
+      <p>Casa Serra has sixteen rooms and one olive tree.</p>
+      <p>This is the walk we drew for it.</p>
+    </div>
+    <div class="loader__bar"><span>Drawing</span><i><b id="loadFill"></b></i><span id="loadPct">0%</span></div>
+  </div>
+
+  <header class="topbar">
+    <a class="mark" href="#" data-to="0">Lintel</a>
+    <a class="pill" href="#finale" data-to="end">Start a project</a>
+  </header>
+
+  <section class="hero" id="hero" aria-label="Casa Serra, ground floor plan">
+    <p class="hero__kicker">Lintel <span>·</span> Casa Serra, Sintra <span>·</span> 2026</p>
+    <h1 class="hero__title">
+      <span class="mask"><span>Every house</span></span>
+      <span class="mask"><span>starts as</span></span>
+      <span class="mask"><span>a <em>plan.</em></span></span>
+    </h1>
+    <p class="hero__lede">A courtyard house of 946 m² in the hills above Sintra. Scroll, and walk into the drawing.</p>
+    <div class="titleblock" aria-hidden="true">
+      <div><span>Project</span><b>Casa Serra</b></div>
+      <div><span>Drawing</span><b>Ground floor plan</b></div>
+      <div><span>Scale</span><b>1 : 200</b></div>
+      <div><span>Sheet</span><b>A-101 rev D</b></div>
+    </div>
+  </section>
+
+  <div class="spots" id="spots"></div>
+
+  <nav class="ruler" id="ruler" aria-label="Progress">
+    <div class="ruler__ticks" id="rulerTicks"></div>
+    <div class="ruler__now" id="rulerNow"><i></i></div>
+  </nav>
+  <p class="count" id="count"><b>00</b> / 08 rooms</p>
+
+  <div class="hint" id="hint">
+    <span class="hint__text" id="hintText">Scroll to walk in</span>
+    <i class="hint__line"><b id="hintFill"></b></i>
+  </div>
+
+  <div class="veil" id="veil" aria-hidden="true"></div>
+
+  <footer class="corner">
+    <a href="#finale" data-to="end">Work</a><span></span><a href="#finale" data-to="end">Studio</a><span></span><a href="#finale" data-to="end">Contact ›</a>
+  </footer>
+
+  <main class="track" id="track"></main>
+
+  <section class="finale" id="finale">
+    <div class="finale__inner">
+      <p class="eyebrow" data-rise>A-101 <span>·</span> ground floor plan</p>
+      <h2 class="finale__title">
+        <span class="mask"><span data-line>Every building starts flat.</span></span>
+        <span class="mask"><span data-line>Ours don't <em>stay</em> that way.</span></span>
+      </h2>
+      <p class="finale__lede" data-rise>Lintel is a practice of six in Lisbon. We draw everything by hand first, then we argue about stone. Houses, a chapel, one very small library.</p>
+      <div class="finale__cta" data-rise>
+        <a class="pill pill--solid" href="#">Start a project</a>
+        <a class="link" href="#">See all work</a>
+      </div>
+    </div>
+    <p class="ghost" aria-hidden="true">Lintel</p>
+    <div class="finale__meta">
+      <span>38.80° N · 9.38° W</span>
+      <span>Rua da Serra, Sintra</span>
+      <span>Concept page, rendered live in your browser</span>
+      <span>Materials: Poly Haven, CC0</span>
+    </div>
+  </section>
+
+  <aside class="file" id="file" aria-hidden="true" aria-labelledby="fileTitle">
+    <button class="file__close" id="fileClose">Close ×</button>
+    <p class="file__no" id="fileNo"></p>
+    <h3 class="file__title" id="fileTitle"></h3>
+    <p class="file__time" id="fileTime"></p>
+    <p class="file__text" id="fileText"></p>
+    <ul class="file__facts" id="fileFacts"></ul>
+  </aside>
+
+  <div class="nogl" id="nogl" hidden><p>This page builds a house in real time and needs WebGL 2.</p></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+  <script src="shared/fx-core.js"></script>
+  <script src="shared/fx-post.js"></script>
+  <script src="shared/fx-paint.js"></script>
+  <script src="shared/fx-experience.js"></script>
+  <script src="staging.js"></script>
+  <script src="hero-options.js"></script>
+  <script src="light-options.js"></script>
+  <script src="facade-options.js"></script>
+  <script src="code-sky.js"></script>
+  <script src="code-materials.js"></script>
+  <script src="house-looks.js"></script>
+  <script src="scene.js"></script>
+</body>
+</html>

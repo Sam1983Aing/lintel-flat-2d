@@ -1,0 +1,4 @@
+K = v8 code, first pass
+M = scan
+N = v8 code, second pass
+(round 4, iteration 8 second pass. Same light in all three.)

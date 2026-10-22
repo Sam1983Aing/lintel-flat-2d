@@ -1,0 +1,24 @@
+# Heavy media and build outputs stay on disk, out of history
+*.mp4
+*.mov
+*.webm
+*.hdr
+**/recordings/
+**/demo/
+**/output/
+**/captures/
+teach/shots/
+teach/reviews/*blind*/
+# The Poly Haven scans and skies: tools/fetch_assets.py downloads them again
+# (the top-level folder only: v10's photos in 001 Lintel/v10/assets/ are part of the page)
+/assets/
+# The two public sites are their own repositories (casa-serra, casa-larga)
+publish/
+node_modules/
+.DS_Store
+# The standalone build's download cache and its local test copy (tools/build-standalone.mjs makes them again)
+tools/standalone/
+lintel-local.html
+lintel-aura-local.html
+# The starter run's downloaded textures (Casa Larga's own repo has them)
+teach/**/assets/

@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The scan follows the camera</title>
+<style>
+  html, body { margin: 0; background: #ede8dc; color: #1d1b18; font: 14px/1.45 -apple-system, "Helvetica Neue", Arial, sans-serif; }
+  body { height: 600vh; }
+  canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+  .panel { position: fixed; left: 16px; top: 16px; width: 260px; padding: 14px 16px; background: rgba(255, 253, 248, 0.94); border: 1px solid rgba(29, 27, 24, 0.2); }
+  .panel h1 { margin: 0 0 6px; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; }
+  .panel label { display: block; margin-top: 9px; }
+  .panel input[type=range] { width: 100%; margin: 2px 0 0; }
+  .panel p { margin: 10px 0 0; color: #6b655c; font-size: 12.5px; }
+  .bars { display: flex; gap: 6px; margin-top: 10px; }
+  .bars span { flex: 1; height: 6px; background: linear-gradient(90deg, #e8591a var(--v, 0%), rgba(29, 27, 24, 0.14) var(--v, 0%)); }
+  @media (max-width: 700px) { .panel { top: auto; bottom: 16px; right: 16px; width: auto; } }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div class="panel">
+  <h1>The scan follows the camera</h1>
+  <label><input type="checkbox" id="follow" checked> Each room waits for the camera</label>
+  <label>Lead (how early a room starts) <input type="range" id="lead" min="-0.08" max="0.2" step="0.005" value="0.1"></label>
+  <label>Piece size <input type="range" id="piece" min="0.3" max="3" step="0.05" value="1"></label>
+  <div class="bars"><span></span><span></span><span></span></div>
+  <p>Scroll to walk. The three bars are the three rooms. Untick the box to see every room finish with the first one.</p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.min.js"></script>
+<script>
+/* The scan follows the camera
+   Card: "The scan that follows the camera" in ../02-techniques.md
+
+   Three rooms in a row, all of them a line drawing at first. Each room has ONE number, its reveal, from 0 (drawing)
+   to 1 (real). Every surface asks the shader two things: which room am I in, and at which moment of that room's
+   reveal do I land. The scroll then only has to move three numbers, and it moves each one when the camera gets there. */
+
+// ---- the knobs ----
+const ROOM_D = 8;     // metres, the depth of each room along the walk
+const LEAD = 0.1;     // how long before a door its room starts, as a share of the whole scroll (the slider overrides it).
+                      // Too little and the front is under your feet, so all you see ahead is a drawing
+const TAIL = 0.14;    // how long after the door it keeps going. Short is a flash. Long, and you stand in a drawing
+const PIECE = 1.0;    // metres. Slabs and panels of this size land one at a time (the slider overrides it)
+const JITTER = 0.25;  // 0 = pieces land strictly front to back, 1 = in any order
+const BAND = 0.14;    // how long a piece keeps its orange outline after it lands, in reveal units
+const START_Z = 4, END_Z = -21.5, EYE = 1.55;   // the walk: straight through the three doors
+const PAPER = [0.929, 0.91, 0.863], INK = [0.114, 0.106, 0.094], ACCENT = [0.91, 0.349, 0.102];
+
+const glsl = (c) => `vec3(${c.join(', ')})`;
+const RU = { uRev: { value: [0, 0, 0] }, uPiece: { value: PIECE } };   // shared by every material
+const VERT = `varying vec3 vW; varying vec3 vN;
+  void main() { vec4 w = modelMatrix * vec4(position, 1.0); vW = w.xyz; vN = mat3(modelMatrix) * normal; gl_Position = projectionMatrix * viewMatrix * w; }`;
+const FRAG = `
+  uniform float uRev[3]; uniform float uPiece; uniform vec3 uColor; uniform float uLine;
+  varying vec3 vW; varying vec3 vN;
+  float hash(vec3 p) { return fract(sin(dot(p, vec3(12.9898, 78.233, 37.719))) * 43758.5453); }
+  void main() {
+    float room = clamp(floor(-vW.z / ${ROOM_D.toFixed(1)}), 0.0, 2.0);            // which room is this point in
+    float rev = room < 0.5 ? uRev[0] : room < 1.5 ? uRev[1] : uRev[2];          // that room's number
+    if (uLine > 0.5) {                                                           // the drawing's own lines leave as the front passes
+      float along = clamp(-vW.z / ${ROOM_D.toFixed(1)} - room, 0.0, 1.0);
+      if (rev > 0.0 && along * ${(1 - BAND).toFixed(2)} + ${(BAND * 0.5).toFixed(2)} < rev) discard;
+      gl_FragColor = vec4(${glsl(INK)}, 1.0); return;
+    }
+    vec3 n = normalize(vN);
+    vec3 p = vW - n * 0.02;                                                      // a hair inside the surface, so a face on a piece border cannot flicker
+    vec3 cell = floor(p / uPiece);                                               // which piece
+    float along = clamp(-(cell.z + 0.5) * uPiece / ${ROOM_D.toFixed(1)} - room, 0.0, 1.0);   // how deep in the room, 0 at the door
+    float t = mix(along, hash(cell), ${JITTER.toFixed(2)}) * ${(1 - BAND).toFixed(2)};       // the moment this piece lands
+    float real = step(t, rev) * step(0.0001, rev);
+    float fresh = real * (1.0 - smoothstep(0.0, ${BAND.toFixed(2)}, rev - t));    // 1 right after landing, 0 a moment later
+    vec3 f = abs(fract(p / uPiece) - 0.5);
+    vec3 e = step(0.5 - 0.035 / uPiece, f) * (1.0 - abs(n));                     // close to the piece's border, in the two directions the face runs
+    float outline = max(e.x, max(e.y, e.z));
+    vec3 lit = uColor * (0.74 + 0.26 * max(dot(n, normalize(vec3(0.4, 0.8, 0.5))), 0.0));
+    vec3 col = mix(${glsl(PAPER)}, lit, real);
+    gl_FragColor = vec4(mix(col, ${glsl(ACCENT)}, fresh * max(outline, 0.16)), 1.0);
+  }`;
+const rgb = (h) => new THREE.Vector3((h >> 16 & 255) / 255, (h >> 8 & 255) / 255, (h & 255) / 255);
+const material = (color, line) => new THREE.ShaderMaterial({ vertexShader: VERT, fragmentShader: FRAG,
+  uniforms: { uRev: RU.uRev, uPiece: RU.uPiece, uColor: { value: rgb(color) }, uLine: { value: line } },
+  polygonOffset: !line, polygonOffsetFactor: 1, polygonOffsetUnits: 1 });
+
+const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('c'), antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setClearColor(0xede8dc);
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(62, 1, 0.1, 80);
+const lineMat = material(0, 1);
+function box(w, h, d, x, y, z, color) {                     // every box is drawn twice: its faces, and its edges as the drawing
+  const geo = new THREE.BoxGeometry(w, h, d).translate(x, y, z);
+  scene.add(new THREE.Mesh(geo, material(color, 0)), new THREE.LineSegments(new THREE.EdgesGeometry(geo), lineMat));
+}
+const FLOORS = [0xb89468, 0xa9a59c, 0x8a6a4c], W = 6, H = 3;
+for (let i = 0; i < 3; i++) {
+  const z0 = -i * ROOM_D, mid = z0 - ROOM_D / 2, z1 = z0 - ROOM_D;
+  box(W, 0.1, ROOM_D, 0, -0.05, mid, FLOORS[i]);
+  box(0.2, H, ROOM_D, -W / 2 - 0.1, H / 2, mid, 0xf2ede2);
+  box(0.2, H, ROOM_D, W / 2 + 0.1, H / 2, mid, 0xf2ede2);
+  if (i < 2) {                                              // the far wall, with a door to the next room
+    box(2.3, H, 0.2, -1.85, H / 2, z1 + 0.1, 0xe6dfd0); box(2.3, H, 0.2, 1.85, H / 2, z1 + 0.1, 0xe6dfd0);
+    box(1.4, 0.8, 0.2, 0, 2.6, z1 + 0.1, 0xe6dfd0);
+  } else box(W, H, 0.2, 0, H / 2, z1 + 0.1, 0xe6dfd0);
+}
+box(0.9, 0.75, 2.4, -2.3, 0.375, -4.4, 0xc9753d); box(1.1, 0.35, 1.1, -0.6, 0.175, -4.4, 0x5b4a3a);        // room 1: sofa, low table
+box(1.0, 0.74, 3.2, 1.9, 0.37, -12.2, 0x6b4f37); box(0.4, 0.45, 2.8, 0.9, 0.225, -12.2, 0x9aa38c);         // room 2: table, bench
+box(2.0, 0.5, 2.2, 1.9, 0.25, -21.9, 0xd9d2c4); box(2.2, 1.2, 0.15, 1.9, 0.6, -23.1, 0x7a5c44);            // room 3: bed, headboard
+box(0.5, 0.5, 0.5, 0.5, 0.25, -22.7, 0x5b4a3a);
+
+const ui = {};
+['follow', 'lead', 'piece'].forEach((id) => { ui[id] = document.getElementById(id); });
+const bars = document.querySelectorAll('.bars span');
+const span = (x, a, b) => Math.min(1, Math.max(0, (x - a) / (b - a)));
+const ease = (x) => x * x * (3 - 2 * x);
+const enter = [0, 1, 2].map((i) => (START_Z + i * ROOM_D) / (START_Z - END_Z));   // the scroll position where the camera crosses each door
+let s = 0;
+
+function frame() {
+  const max = document.documentElement.scrollHeight - innerHeight;
+  s += ((max > 0 ? scrollY / max : 0) - s) * 0.12;          // the camera trails the scroll a little
+  const lead = +ui.lead.value;
+  RU.uPiece.value = +ui.piece.value;
+  for (let i = 0; i < 3; i++) {
+    const door = ui.follow.checked ? enter[i] : enter[0];   // unticked: every room goes with the first one (what the page did before)
+    RU.uRev.value[i] = ease(span(s, door - lead, door + TAIL));
+    bars[i].style.setProperty('--v', (RU.uRev.value[i] * 100).toFixed(0) + '%');
+  }
+  const z = START_Z + (END_Z - START_Z) * s, yaw = Math.sin(s * Math.PI * 3) * 0.3;
+  camera.position.set(0, EYE, z);
+  camera.lookAt(Math.sin(yaw) * 2.5, EYE - 0.12, z - Math.cos(yaw) * 2.5);
+  renderer.render(scene, camera);
+  requestAnimationFrame(frame);
+}
+function resize() { renderer.setSize(innerWidth, innerHeight, false); camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); }
+addEventListener('resize', resize);
+resize();
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lintel · Casa Serra</title>
+  <meta name="description" content="Every building starts flat. A concept page for an architecture practice where the elevation drawing becomes the house, one real material at a time." />
+  <!--
+    CREATIVE DIRECTION
+    Concept     Every building starts flat, so the page does too.
+    Mood        precise, calm, material, quietly confident
+    Palette     paper #efebe2, ink #1d1d1f, one accent: oxide #b8452a
+    Type        Instrument Serif (display), Geist (body), Geist Mono (drawing annotations)
+    Motion      expo.out, heavy Lenis scroll, scroll-scrubbed reveals
+    Signature   A south elevation on paper opens into depth (dolly zoom), and each
+                material swatch flies off the board onto its surface, turning ink
+                into scanned concrete, travertine, charred larch and bronze.
+  -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../shared/fx-ui.css" />
+  <link rel="stylesheet" href="theme.css" />
+</head>
+<body>
+  <canvas id="gl" aria-hidden="true"></canvas>
+
+  <div class="loader" id="loader">
+    <p class="loader__place">Lintel · Arquitectura<br />Lisboa</p>
+    <div class="loader__story" aria-live="polite">
+      <p>Every house we have built began as a line.</p>
+      <p>Casa Serra took four hundred and twelve drawings.</p>
+      <p>This is the one we kept.</p>
+    </div>
+    <div class="loader__bar"><span>Drawing</span><i><b id="loadFill"></b></i><span id="loadPct">0%</span></div>
+  </div>
+
+  <header class="topbar">
+    <a class="mark" href="#" data-to="0">Lintel</a>
+    <a class="pill" href="#finale" data-to="end">Start a project</a>
+  </header>
+
+  <section class="hero" id="hero" aria-label="Casa Serra, south elevation">
+    <p class="hero__kicker">Lintel <span>·</span> Casa Serra, Sintra <span>·</span> 2026</p>
+    <h1 class="hero__title">
+      <span class="mask"><span>Every building</span></span>
+      <span class="mask"><span>starts <em>flat.</em></span></span>
+    </h1>
+    <div id="levels" class="levels" aria-hidden="true"></div>
+    <p class="sheet-meta">South elevation <span>·</span> scroll to build it</p>
+    <div class="titleblock" aria-hidden="true">
+      <div><span>Project</span><b>Casa Serra</b></div>
+      <div><span>Drawing</span><b>South elevation</b></div>
+      <div><span>Scale</span><b>1 : 100</b></div>
+      <div><span>Sheet</span><b>A-201 rev C</b></div>
+    </div>
+  </section>
+
+  <div class="board" aria-hidden="true">
+    <p class="board-label">Material board</p>
+    <figure class="swatch" style="--img: url('../../assets/tex/wood_textured_concrete/diff.jpg')"><i></i><figcaption><b>01</b> Board-marked concrete</figcaption></figure>
+    <figure class="swatch" style="--img: url('../../assets/tex/marble_01/diff.jpg')"><i></i><figcaption><b>02</b> Honed travertine</figcaption></figure>
+    <figure class="swatch" style="--img: url('../../assets/tex/black_painted_planks/diff.jpg')"><i></i><figcaption><b>03</b> Charred larch</figcaption></figure>
+    <figure class="swatch swatch--bronze"><i></i><figcaption><b>04</b> Bronze and glass</figcaption></figure>
+  </div>
+
+  <div class="spots" id="spots"></div>
+
+  <nav class="ruler" id="ruler" aria-label="Progress">
+    <div class="ruler__ticks" id="rulerTicks"></div>
+    <div class="ruler__now" id="rulerNow"><i></i></div>
+  </nav>
+  <p class="count" id="count"><b>00</b> / 04 materials</p>
+
+  <div class="hint" id="hint">
+    <span class="hint__text" id="hintText">Scroll to build the house</span>
+    <i class="hint__line"><b id="hintFill"></b></i>
+  </div>
+
+  <div class="veil" id="veil" aria-hidden="true"></div>
+  <p class="beat" id="beat" aria-hidden="true">
+    <span class="beat__line"><span>Four hundred and twelve drawings.</span></span>
+    <span class="beat__line"><span>One <em>house</em>.</span></span>
+  </p>
+
+  <footer class="corner">
+    <a href="#finale" data-to="end">Work</a><span></span><a href="#finale" data-to="end">Studio</a><span></span><a href="#finale" data-to="end">Contact ›</a>
+  </footer>
+
+  <main class="track" id="track"></main>
+
+  <section class="finale" id="finale">
+    <div class="finale__inner">
+      <p class="eyebrow" data-rise>A-201 <span>·</span> as built</p>
+      <h2 class="finale__title">
+        <span class="mask"><span data-line>Every building starts flat.</span></span>
+        <span class="mask"><span data-line>Ours don't <em>stay</em> that way.</span></span>
+      </h2>
+      <p class="finale__lede" data-rise>Lintel is a practice of six in Lisbon. We draw everything by hand first, then we argue about stone. Houses, a chapel, one very small library.</p>
+      <div class="finale__cta" data-rise>
+        <a class="pill pill--solid" href="#">Start a project</a>
+        <a class="link" href="#">See all work</a>
+      </div>
+    </div>
+    <p class="ghost" aria-hidden="true">Lintel</p>
+    <div class="finale__meta">
+      <span>38.80° N · 9.38° W</span>
+      <span>Rua da Serra, Sintra</span>
+      <span>Concept page, rendered live in your browser</span>
+      <span>Materials: Poly Haven, CC0</span>
+    </div>
+  </section>
+
+  <aside class="file" id="file" aria-hidden="true" aria-labelledby="fileTitle">
+    <button class="file__close" id="fileClose">Close ×</button>
+    <p class="file__no" id="fileNo"></p>
+    <h3 class="file__title" id="fileTitle"></h3>
+    <p class="file__time" id="fileTime"></p>
+    <p class="file__text" id="fileText"></p>
+    <ul class="file__facts" id="fileFacts"></ul>
+  </aside>
+
+  <div class="nogl" id="nogl" hidden><p>This page builds a house in real time and needs WebGL 2.</p></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+  <script src="../../shared/fx-core.js"></script>
+  <script src="../../shared/fx-post.js"></script>
+  <script src="../../shared/fx-experience.js"></script>
+  <script src="scene.js"></script>
+</body>
+</html>

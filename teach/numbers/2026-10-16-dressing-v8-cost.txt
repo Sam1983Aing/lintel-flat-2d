@@ -1,0 +1,12 @@
+Frame cost in the dressing room, ms per frame, uncapped, 1728x992 at DPR 2 (tools/view_cost.py --room dressing --only down,along --frames 90).
+v8b, then the page after the dressing notes of 16 Oct, interleaved. Sam's own Chrome was using the GPU at the same time: the rounds disagree.
+
+round 1 v8b:
+{"query": "x=1", "views": {"along": {"avg": 46.17, "p95": 118.6}, "down": {"avg": 38.47, "p95": 111.7}}}
+round 1 now:
+{"query": "x=1", "views": {"along": {"avg": 33.95, "p95": 108}, "down": {"avg": 35.85, "p95": 120.8}}}
+round 2 v8b:
+{"query": "x=1", "views": {"along": {"avg": 31.67, "p95": 98.7}, "down": {"avg": 32.53, "p95": 94}}}
+round 2 now:
+{"query": "x=1", "views": {"along": {"avg": 50.95, "p95": 173.7}, "down": {"avg": 52.81, "p95": 149}}}
+

@@ -1,0 +1,23 @@
+Flicker over the stretch where the bedroom's new fiddle-leaf fig scans in (2525 to 2537 a slow scroll, 2545 held, 2560 a slow scroll),
+1728x992 at DPR 2, the middle crop. v8b first (its old plant, decor), then the page after Sam's notes of 16 Oct (the fig, scanned).
+
+v8b:
+1728x992 at 2x, crop 1037x635
+at      step  move    flicker  ratio   render     ms/frame
+2525    0.3   3.298   4.448    1.35    2434x1397  98.9
+2545    0     0.606   1.154    1.90    2434x1397  90.5
+2560    0.3   0.731   1.262    1.73    2434x1397  100.9
+
+now:
+1728x992 at 2x, crop 1037x635
+at      step  move    flicker  ratio   render     ms/frame
+2525    0.3   10.938  18.909   1.73    2434x1397  69.9
+2545    0     0.853   1.586    1.86    2434x1397  43.5
+2560    0.3   10.386  17.214   1.66    2434x1397  44.8
+
+Reading: v8b's walk is different here (the wine stop and the bedroom's one-move entry came after it), so the same vh is not the
+same view and only the ratios compare. Slow-scroll ratios 1.73 and 1.66 sit in the band every room has shown today (1.5 to 1.8).
+The moves are larger now because the bedroom's fill runs across this stretch. Held at 2545 the picture moves 0.85, a little over
+the usual 0.6 for a held frame. Two held frames differenced and amplified (teach/shots/2026-10-16-bedroom-fig-after/held-difference.jpg)
+are black except a few dust motes in the sun by the glass: this view has more sunlit air in it than the other held views, the fig
+itself does not move.

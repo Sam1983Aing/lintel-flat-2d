@@ -1,0 +1,18 @@
+Flicker at the master bedroom's rest (2600 held, 2560 a slow scroll) and through the dressing room (2725, 2775),
+1728x992 at DPR 2, the middle crop. v8b first, then the page after the bedroom and dressing notes of 16 Oct.
+
+v8b:
+1728x992 at 2x, crop 1037x635
+at      step  move    flicker  ratio   render     ms/frame
+2600    0     0.598   1.138    1.90    2434x1397  60.5
+2560    0.3   0.730   1.261    1.73    2434x1397  56.1
+2725    0.3   11.997  20.076   1.67    2434x1397  55.7
+2775    0.3   12.363  21.459   1.74    2434x1397  51.7
+
+now:
+1728x992 at 2x, crop 1037x635
+at      step  move    flicker  ratio   render     ms/frame
+2600    0     0.598   1.137    1.90    2434x1397  59.2
+2560    0.3   0.747   1.254    1.68    2434x1397  61.1
+2725    0.3   8.387   13.210   1.58    2434x1397  61.4
+2775    0.3   12.911  22.667   1.76    2434x1397  52.8

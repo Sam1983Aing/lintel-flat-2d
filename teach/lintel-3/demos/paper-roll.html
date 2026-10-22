@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The roll of paper</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #ede8dc; color: #1d1b18; font: 14px/1.45 -apple-system, "Helvetica Neue", Arial, sans-serif; overflow: hidden; }
+  canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+  /* The roll: a tall band lit like a cylinder, with a shadow on the side it is rolling toward. */
+  .roll { position: fixed; left: 0; top: 0; width: 90px; height: 240vh; pointer-events: none; will-change: transform;
+    background: linear-gradient(90deg, #a79d88 0%, #e4dccb 16%, #fffdf6 40%, #ece5d6 66%, #b3a993 100%);
+    box-shadow: 30px 0 44px rgba(30, 25, 18, 0.38), 6px 0 10px rgba(30, 25, 18, 0.3); }
+  .roll i { position: absolute; inset: 0; opacity: 0.4;     /* a faint print that slides as the roll turns */
+    background: repeating-linear-gradient(90deg, transparent 0 22px, rgba(29, 27, 24, 0.45) 22px 23px); background-position-x: var(--turn, 0px); }
+  .panel { position: fixed; left: 16px; top: 16px; width: 260px; padding: 14px 16px; background: rgba(255, 253, 248, 0.94); border: 1px solid rgba(29, 27, 24, 0.2); z-index: 2; }
+  .panel h1 { margin: 0 0 6px; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; }
+  .panel label { display: block; margin-top: 9px; }
+  .panel input[type=range] { width: 100%; margin: 2px 0 0; }
+  .panel p { margin: 10px 0 0; color: #6b655c; font-size: 12.5px; }
+  @media (max-width: 700px) { .panel { top: auto; bottom: 16px; right: 16px; width: auto; } }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div class="roll"><i></i></div>
+<div class="panel">
+  <h1>The roll of paper</h1>
+  <label><input type="checkbox" id="band" checked> Show the roll</label>
+  <label><input type="checkbox" id="play"> Play</label>
+  <label>Unroll <input type="range" id="k" min="0" max="1" step="0.001" value="0.45"></label>
+  <label>Lean <input type="range" id="lean" min="0" max="12" step="0.1" value="3"></label>
+  <p>Untick "Show the roll" and you are left with a plain wipe. The band is what makes it paper.</p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.min.js"></script>
+<script>
+/* The roll of paper
+   Card: "The roll of paper" in ../02-techniques.md
+
+   Two halves that move as one. In the 3D there is a line on the ground: behind it every material shows the drawing
+   again (paper, ink walls), and things that were never on the drawing (trees) are not drawn at all.
+   On the page there is a band of CSS that is placed on that same line every frame, by projecting the line to the screen. */
+
+// ---- the knobs ----
+const LEAN = 3;                    // degrees. Nobody unrolls a sheet dead straight (the slider overrides it)
+const D_IN = -19, D_REST = -8.6, D_OUT = 11;   // metres along the roll's travel: off the sheet, resting beside the house, past it
+const IN_END = 0.16, REST_END = 0.27;          // the three beats: it rolls in fast, rests a moment, then opens slowly
+const ROLL_W0 = 104, ROLL_W1 = 30; // pixels. The roll is thick at the start and thin once it has given its paper
+const PAPER = 'vec3(0.929, 0.910, 0.863)', INK = 'vec3(0.114, 0.106, 0.094)';
+
+const RU = { uRoll: { value: new THREE.Vector3(1, 0, -1e6) } };   // the line: normal x, normal z, distance
+
+// The patch. Any standard material gets the same few lines added, and says what it is on the drawing.
+function drawable(mat, onDrawing) {                        // onDrawing: 'paper', 'hatch', 'ink' or 'none'
+  const drawn = { paper: PAPER, ink: INK, none: PAPER,
+    hatch: `${PAPER} * (1.0 - 0.2 * step(0.88, fract((vDrawW.x + vDrawW.z) / 0.45)))` }[onDrawing];
+  mat.onBeforeCompile = (sh) => {
+    sh.uniforms.uRoll = RU.uRoll;
+    sh.vertexShader = 'varying vec3 vDrawW;\n' + sh.vertexShader.replace('#include <project_vertex>',
+      '#include <project_vertex>\n vDrawW = (modelMatrix * vec4(transformed, 1.0)).xyz;');
+    sh.fragmentShader = 'uniform vec3 uRoll; varying vec3 vDrawW;\n' + sh.fragmentShader.replace('#include <dithering_fragment>', `#include <dithering_fragment>
+      float rolled = step(dot(vDrawW.xz, uRoll.xy), uRoll.z);            // 1 behind the line, where the paper already lies
+      ${onDrawing === 'none' ? 'if (rolled > 0.5) discard;' : ''}
+      gl_FragColor.rgb = mix(gl_FragColor.rgb, ${drawn}, rolled);`);
+  };
+  mat.customProgramCacheKey = () => 'drawable-' + onDrawing;
+  return mat;
+}
+
+const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('c'), antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(8, 1, 100, 260);   // a long lens straight above: the house as a plan in real materials
+camera.up.set(0, 0, -1);
+camera.position.set(0, 170, 0);
+camera.lookAt(0, 0, 0);
+scene.add(new THREE.HemisphereLight(0xdfe8f2, 0xb9a27c, 1.5));
+const sun = new THREE.DirectionalLight(0xffd9a8, 3.2);
+sun.position.set(-11, 18, 8);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+Object.assign(sun.shadow.camera, { left: -20, right: 20, top: 20, bottom: -20, near: 1, far: 70 });
+sun.shadow.bias = -0.0005;
+scene.add(sun);
+
+function box(w, h, d, x, z, color, onDrawing, y) {
+  const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), drawable(new THREE.MeshLambertMaterial({ color }), onDrawing));
+  m.position.set(x, (y || 0) + h / 2, z);
+  m.castShadow = m.receiveShadow = true;
+  scene.add(m);
+  return m;
+}
+box(60, 0.1, 40, 0, 0, 0x8f9a5c, 'paper', -0.1);                                         // the lawn is blank paper on the drawing
+box(13, 0.06, 8, 0.5, 0, 0xb89468, 'paper');                                             // the floor of the house
+box(5, 0.05, 3.2, 3.5, 6.4, 0xcfc7b6, 'hatch'); box(4, 0.04, 2, 3.5, 6.4, 0x4f9db0, 'hatch', 0.02);   // a terrace and its pool
+[[-6, -4, 7, -3.7], [-6, 3.7, 7, 4], [-6, -3.7, -5.7, 3.7], [6.7, -3.7, 7, 3.7], [-1, -3.7, -0.8, 1], [2.6, -1, 2.8, 3.7], [-0.8, -1, 1.4, -0.8]]
+  .forEach(([x0, z0, x1, z1]) => box(x1 - x0, 2.8, z1 - z0, (x0 + x1) / 2, (z0 + z1) / 2, 0xf4efe4, 'ink'));   // walls are ink on the drawing
+box(2.4, 0.5, 1, -3.4, -1.6, 0xc9753d, 'paper'); box(1.8, 0.75, 3.4, 4.8, 0.6, 0x6b4f37, 'paper');             // a sofa, a table
+[[-9.5, -1], [-8.2, 5.5], [9.6, -2.5], [10.4, 4.6], [-2.5, 7.4]].forEach(([x, z], i) => {  // trees were never on the drawing
+  const t = new THREE.Mesh(new THREE.SphereGeometry(1.5 + (i % 2) * 0.4, 16, 12), drawable(new THREE.MeshLambertMaterial({ color: 0x55703a }), 'none'));
+  t.position.set(x, 2.4, z);
+  t.castShadow = true;
+  scene.add(t);
+});
+
+const ui = {};
+['band', 'play', 'k', 'lean'].forEach((id) => { ui[id] = document.getElementById(id); });
+const band = document.querySelector('.roll');
+const lerp = (a, b, t) => a + (b - a) * t, ease = (x) => x * x * (3 - 2 * x);
+const toPx = (v) => { v.project(camera); return [(v.x * 0.5 + 0.5) * innerWidth, (0.5 - v.y * 0.5) * innerHeight]; };
+
+function frame(now) {
+  if (ui.play.checked) ui.k.value = (now / 9000) % 1;
+  const k = +ui.k.value, A = +ui.lean.value * Math.PI / 180, N = [Math.cos(A), Math.sin(A)], T = [-N[1], N[0]];
+  // where the line is: three beats
+  const open = ease(Math.max(0, (k - REST_END) / (1 - REST_END)));
+  const d = k < IN_END ? lerp(D_IN, D_REST, 1 - Math.pow(1 - k / IN_END, 3)) : lerp(D_REST, D_OUT, open);
+  RU.uRoll.value.set(N[0], N[1], d);                        // the 3D half: one uniform
+
+  // the page half: put the band on the same line, by asking the camera where two points of the line are on screen
+  const a = toPx(new THREE.Vector3(N[0] * d - T[0] * 20, 0, N[1] * d - T[1] * 20));
+  const b = toPx(new THREE.Vector3(N[0] * d + T[0] * 20, 0, N[1] * d + T[1] * 20));
+  const turn = Math.atan2(b[1] - a[1], b[0] - a[0]) - Math.PI / 2;      // the band stands upright, so turn it from vertical
+  const w = lerp(ROLL_W0, ROLL_W1, open);
+  const cx = (a[0] + b[0]) / 2 + Math.cos(turn) * w / 2, cy = (a[1] + b[1]) / 2 + Math.sin(turn) * w / 2;   // its back edge sits on the line
+  band.style.display = ui.band.checked ? '' : 'none';
+  band.style.width = w.toFixed(1) + 'px';
+  band.style.transform = `translate(${cx.toFixed(1)}px, ${cy.toFixed(1)}px) translate(-50%, -50%) rotate(${turn.toFixed(4)}rad)`;
+  band.style.setProperty('--turn', (-d * 46).toFixed(1) + 'px');
+
+  renderer.render(scene, camera);
+  requestAnimationFrame(frame);
+}
+function resize() { renderer.setSize(innerWidth, innerHeight, false); camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); }
+addEventListener('resize', resize);
+resize();
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>

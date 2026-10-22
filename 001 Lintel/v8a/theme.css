@@ -1,0 +1,142 @@
+/* Lintel: paper, ink, one oxide accent */
+:root {
+  --bg: #efebe2;
+  --fg: #1d1d1f;
+  --fg-dim: rgba(29, 29, 31, 0.62);
+  --line: rgba(29, 29, 31, 0.45);
+  --accent: #b8452a;
+  --display: 'Instrument Serif', 'Times New Roman', serif;
+  --label: 'Geist Mono', ui-monospace, monospace;
+  --body: 'Geist', system-ui, sans-serif;
+  --shadow: 0 0 10px rgba(239, 235, 226, 0.9), 0 0 2px rgba(239, 235, 226, 0.9);
+  --tag-shadow: 0 0 14px rgba(239, 235, 226, 0.95), 0 0 3px rgba(239, 235, 226, 0.9);
+  --tag-title-font: 400 clamp(34px, 3.4vw, 56px)/0.95 var(--display);
+  --tag-no-font: 500 10px/1 var(--label);
+  --tag-meta-font: 400 10.5px/1.4 var(--label);
+  --loader-story-font: 400 clamp(24px, 2.8vw, 38px)/1.2 var(--display);
+  --loader-place-font: 500 11px/1.6 var(--label);
+  --beat-font: 400 clamp(34px, 4.4vw, 70px)/1.05 var(--display);
+  --beat-fg: #f7f3ea;
+  --beat-shadow: 0 2px 30px rgba(20, 16, 12, 0.45);
+  --veil: radial-gradient(60% 45% at 50% 50%, rgba(24, 20, 16, 0.45), rgba(24, 20, 16, 0.15) 60%, rgba(24, 20, 16, 0) 100%);
+  --file-bg: rgba(239, 235, 226, 0.985);
+  --file-fg: #1d1d1f;
+  --file-title-font: 400 52px/0.95 var(--display);
+  --file-text-font: 400 22px/1.4 var(--display);
+}
+
+.pill {
+  display: inline-flex; align-items: center; height: 38px; padding: 0 18px;
+  border: 1px solid var(--fg); border-radius: 999px;
+  font: 500 11px/1 var(--label); letter-spacing: 0.12em; text-transform: uppercase;
+  transition: background 0.6s var(--ease), color 0.6s var(--ease);
+  background: rgba(239, 235, 226, 0.55); backdrop-filter: blur(6px);
+}
+.pill:hover, .pill--solid { background: var(--fg); color: var(--bg); }
+.pill--solid:hover { background: var(--accent); border-color: var(--accent); }
+.link { font: 500 11px/1 var(--label); letter-spacing: 0.12em; text-transform: uppercase; border-bottom: 1px solid currentColor; padding-bottom: 4px; }
+
+.mark { font: 400 30px/1 var(--display); letter-spacing: -0.01em; }
+
+/* hero sheet: the text sits in the left column, the plan fills the right */
+.hero__kicker { position: absolute; left: var(--gutter); top: 84px; margin: 0; font: 500 11px/1.4 var(--label); letter-spacing: 0.14em; text-transform: uppercase; }
+.hero__kicker span { color: var(--accent); margin: 0 6px; }
+.hero__title { position: absolute; left: var(--gutter); top: 112px; margin: 0; font: 400 clamp(56px, 7vw, 120px)/0.9 var(--display); letter-spacing: -0.02em; }
+.hero__title .mask { display: block; overflow: hidden; padding-bottom: 0.05em; }
+.hero__title .mask > span { display: block; }
+.hero__title em { font-style: italic; color: var(--accent); }
+.hero__lede { position: absolute; left: var(--gutter); top: calc(112px + 3 * 0.95 * clamp(56px, 7vw, 120px) + 26px); width: 300px; margin: 0; font: 400 15px/1.55 var(--body); color: var(--fg-dim); }
+.titleblock {
+  position: absolute; left: var(--gutter); bottom: 58px;
+  display: grid; grid-template-columns: repeat(2, auto); border: 1px solid var(--fg);
+  font: 400 10px/1.3 var(--label); letter-spacing: 0.08em; text-transform: uppercase; background: rgba(239, 235, 226, 0.7);
+}
+.titleblock div { padding: 7px 12px 8px; border-left: 1px solid var(--fg); border-top: 1px solid var(--fg); display: flex; flex-direction: column; gap: 4px; }
+.titleblock div:nth-child(odd) { border-left: 0; }
+.titleblock div:nth-child(-n+2) { border-top: 0; }
+.titleblock span { opacity: 0.55; font-size: 8.5px; }
+.titleblock b { font-weight: 500; }
+
+/* labels read as drawing annotations */
+.tag__no { color: var(--accent); }
+.count { font: 500 10px/1 var(--label); letter-spacing: 0.14em; text-transform: uppercase; }
+
+/* finale sits on paper */
+.finale {
+  background: linear-gradient(180deg, rgba(239, 235, 226, 0) 0%, rgba(239, 235, 226, 0.72) 30%, rgba(239, 235, 226, 0.97) 62%, var(--bg) 100%);
+  color: var(--fg);
+}
+.finale__inner { position: relative; z-index: 2; max-width: 1200px; }
+/* The closing words stand on clean paper. The plan stays, faint, to their right (the headline used to run across its walls). */
+.finale::before { content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(90deg, rgba(239, 235, 226, 0.96) 0%, rgba(239, 235, 226, 0.96) 60%, rgba(239, 235, 226, 0) 86%);
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 24%); mask-image: linear-gradient(180deg, transparent 0%, #000 24%); }
+.finale .ghost, .finale .finale__meta { position: relative; z-index: 2; }
+.eyebrow { margin: 0 0 26px; font: 500 11px/1 var(--label); letter-spacing: 0.16em; text-transform: uppercase; }
+.eyebrow span { color: var(--accent); margin: 0 6px; }
+.finale__title { margin: 0 0 30px; font: 400 clamp(46px, 7vw, 118px)/0.95 var(--display); letter-spacing: -0.02em; }
+.finale__title em { font-style: italic; color: var(--accent); }
+.finale__lede { max-width: 520px; margin: 0 0 34px; font: 400 17px/1.6 var(--body); color: var(--fg-dim); }
+.finale__cta { display: flex; flex-wrap: wrap; align-items: center; gap: 26px; }
+.ghost { margin: 6vh 0 0; font: 400 clamp(90px, 24vw, 420px)/0.8 var(--display); letter-spacing: -0.04em; color: transparent; -webkit-text-stroke: 1px rgba(29, 29, 31, 0.18); white-space: nowrap; }
+.finale__meta { display: grid; grid-template-columns: repeat(4, auto); justify-content: space-between; gap: 12px 24px; margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line); font: 400 10px/1.5 var(--label); letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-dim); }
+
+.corner { font: 500 10px/1 var(--label); letter-spacing: 0.14em; }
+.loader { background: var(--bg); }
+
+@media (max-width: 760px) {
+  /* a room title's small line wraps on a phone: on one line it ran off the screen and took OPEN FILE with it */
+  .tag__meta { white-space: normal; width: 318px; line-height: 1.7; }
+  .hero__title { top: 96px; font-size: 54px; }
+  .titleblock { display: none; }
+  .hero__lede { display: none; }
+  .finale__meta { grid-template-columns: 1fr 1fr; }
+}
+
+/* The roll of drawing paper that opens across the built house at the end (scene.js, roll()).
+   A band lit from the left like a cylinder. On it, faintly, the lines of the drawing wrapped round the tube
+   (they slide as it turns). Its shadow is thrown ahead of it onto the house, and where the laid sheet leaves
+   it there is the sheet's own thin edge. Width and position are set every frame. */
+.roll { position: fixed; z-index: 5; left: 0; top: 0; width: 90px; height: 180vh; pointer-events: none; opacity: 0; transform-origin: 50% 50%; will-change: transform; overflow: visible;
+  background: linear-gradient(90deg, #9d9482 0%, #cfc7b7 7%, #efeadf 22%, #fdfbf6 36%, #f1ece1 52%, #d7cfc0 72%, #a8a08e 90%, #827969 100%);
+  box-shadow: 46px 0 60px rgba(14, 12, 9, 0.5), 14px 0 20px rgba(14, 12, 9, 0.45), 3px 0 4px rgba(14, 12, 9, 0.4), -6px 0 10px rgba(14, 12, 9, 0.16); }
+.roll i { position: absolute; inset: 0; opacity: 0.62; mix-blend-mode: multiply;
+  /* the plan, printed on the tube (scene.js sets its size and where it starts, so it lines up with the laid sheet) */
+  background: var(--print, none) var(--bp, 0 0) / var(--bs, 600px 500px) no-repeat;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 16%, #000 76%, transparent 100%); mask-image: linear-gradient(90deg, transparent 0%, #000 16%, #000 76%, transparent 100%); }
+/* the sheet's free edge, a dark line with a lit lip, coming round once a turn */
+.roll b { position: absolute; inset: 0; opacity: 0.75;
+  background: linear-gradient(90deg, transparent 0 6px, rgba(40, 34, 26, 0.5) 6px 7.5px, rgba(255, 252, 244, 0.95) 7.5px 9.5px, transparent 9.5px) var(--turn, 0px) 0 / 310px 100% repeat-x;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 20%, #000 80%, transparent 100%); mask-image: linear-gradient(90deg, transparent 0%, #000 20%, #000 80%, transparent 100%); }
+.roll::before { content: ''; position: absolute; inset: 0 auto 0 -3px; width: 5px; background: linear-gradient(90deg, rgba(30, 25, 18, 0) 0, rgba(30, 25, 18, 0.28) 30%, rgba(255, 252, 244, 0.95) 46%, rgba(205, 197, 181, 0.9) 62%, rgba(40, 34, 26, 0.45) 80%, rgba(255, 252, 244, 0.9) 100%); }
+.roll::after { content: ''; position: absolute; inset: 0 -1px 0 auto; width: 2px; background: rgba(30, 25, 18, 0.45); }
+
+/* The page's small print reads its own ground (scene.js, hud()). Each piece looks at the pixels behind it:
+   over dark ground it turns to paper, over a mid tone it keeps a halo of paper round it. */
+.mark, .corner, .count, .ruler, .hint { transition: color 0.45s; }
+/* (the corner links and the counter keep a little paper round their letters, so a line of the drawing passing under them is not an underline) */
+.corner, .count { text-shadow: 0 0 6px rgba(239, 235, 226, 1), 0 0 2px rgba(239, 235, 226, 1), 0 0 12px rgba(239, 235, 226, 0.9); }
+.g-tl-m .mark, .g-bl-m .corner, .g-br-m .count { text-shadow: 0 0 10px rgba(239, 235, 226, 0.95), 0 0 3px rgba(239, 235, 226, 0.9); }
+.g-tl-d .mark, .g-bl-d .corner, .g-br-d .count, .g-r-d .ruler, .g-b-d .hint { color: #f3efe6; }
+.g-tl-d .mark, .g-bl-d .corner, .g-br-d .count, .g-b-d .hint__text { text-shadow: 0 1px 12px rgba(0, 0, 0, 0.65), 0 0 2px rgba(0, 0, 0, 0.6); }
+.g-bl-d .corner span { background: rgba(243, 239, 230, 0.5); }
+.g-r-m .ruler { filter: drop-shadow(0 0 2px rgba(239, 235, 226, 0.95)); }
+.g-b-m .hint__text { text-shadow: 0 0 5px rgba(239, 235, 226, 1), 0 0 12px rgba(239, 235, 226, 0.95), 0 0 2px rgba(239, 235, 226, 1); }
+/* While the page shows the drawing (scene.js sets .on-sheet), the hint's words have a little paper behind them, soft at
+   the edge: a line of the plan that runs under them stops at the letters. */
+html.on-sheet:not(.g-b-d):not(.g-b-m) .hint__text { background: rgba(238, 234, 225, 0.86); box-shadow: 0 0 9px 7px rgba(238, 234, 225, 0.86); }
+.g-r-d .ruler { filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.7)); }
+
+/* A room title over dark ground (the charred wall of the master suite, the olive's crown) turns to paper. */
+.spot--light { --tag-fg: #f3efe6; --tag-shadow: 0 1px 14px rgba(0, 0, 0, 0.6), 0 0 2px rgba(0, 0, 0, 0.5); }
+
+/* The paper rolls out after the loader (scene.js, rollInFrame). The board is the bare drawing board ahead of the roll:
+   a shade darker and cooler than the sheet, so the sheet reads as a sheet. Its left edge follows the roll's line. */
+/* (a fine grain along the board, under the light: as one flat tone it was "the one thing in the frame that looks like a web colour") */
+.board { position: fixed; inset: 0; z-index: 44; pointer-events: none;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='900' height='600'><filter id='n' x='0' y='0' width='100%25' height='100%25'><feTurbulence type='fractalNoise' baseFrequency='0.006 0.55' numOctaves='3' seed='11' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.36  0 0 0 0 0.33  0 0 0 0 0.28  0.42 0 0 0 -0.1'/></filter><rect width='900' height='600' filter='url(%23n)'/></svg>"),
+    radial-gradient(130% 100% at 42% 38%, #ddd8cc 0%, #d2ccbf 100%); }
+.roll--intro { z-index: 45; }
+html.is-rollin, html.is-rollin body { overflow: hidden !important; }
+html.is-rollin .topbar, html.is-rollin .corner, html.is-rollin .hint, html.is-rollin .count, html.is-rollin .ruler { opacity: 0 !important; }
+html.rollin-out .topbar, html.rollin-out .corner, html.rollin-out .hint { transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1); }

@@ -1,0 +1,27 @@
+Living room and kitchen, iteration 8 (15 Oct night). tools/flicker.mjs at 1728x992, DPR 2, ?steady. v8b against the page.
+
+== 001 Lintel/v8b/
+1728x992 at 2x, crop 1037x635
+at      step  move    flicker  ratio   render     ms/frame
+120     0.05  1.296   1.841    1.42    3456x1984  29.3
+170     0.05  1.837   2.674    1.46    3456x1984  31.4
+860     0.05  0.000   0.040    0.00    3456x1984  50.9
+1150    0.05  0.971   1.757    1.81    2434x1397  45.1
+1400    0.05  0.697   1.305    1.87    2434x1397  39.7
+3270    0.05  5.174   8.051    1.56    2434x1397  41.7
+frames kept in /private/tmp/claude-501/-Users-sam-Projects-Claude-Code-014-Flat-3D/a6ba32f3-59fd-4995-ad5b-68ff65f0ad70/scratchpad/fl2-v8b
+== 001 Lintel/
+1728x992 at 2x, crop 1037x635
+at      step  move    flicker  ratio   render     ms/frame
+120     0.05  1.248   2.043    1.64    3456x1984  53.7
+170     0.05  1.835   2.842    1.55    3456x1984  60.2
+860     0.05  0.000   0.080    0.00    3456x1984  34.3
+1150    0.05  0.877   1.560    1.78    2434x1397  27.7
+1400    0.05  0.686   1.280    1.87    2434x1397  26.4
+3270    0.05  5.400   8.363    1.55    2434x1397  26.7
+frames kept in /private/tmp/claude-501/-Users-sam-Projects-Claude-Code-014-Flat-3D/a6ba32f3-59fd-4995-ad5b-68ff65f0ad70/scratchpad/fl2-now
+
+Reading: the living room (1150) and the dining rest (1400) score lower than v8b, the lift (3270) the same ratio.
+The opening (120, 170) scores follow the run's frame time, not the version: across this week's runs at 120,
+1.69 at 18.5 ms, 1.87 at 27, 1.84 at 29, 1.92 at 32, 2.10 at 45, 2.04 at 54, 2.19 at 68. Something at the opening
+runs on the clock, so a slower run scores higher. Compare the opening only between runs of a similar speed.

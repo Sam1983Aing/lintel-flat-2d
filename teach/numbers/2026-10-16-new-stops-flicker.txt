@@ -1,0 +1,11 @@
+Flicker at the new stops of 16 Oct: the wine room (1577 held, 1560 a slow scroll), the bath (3117), the pool (3665 held, 3640 slow), the front path (3945 held, 3925 slow). 1728x992 at DPR 2, the middle crop.
+
+1728x992 at 2x, crop 1037x635
+at      step  move    flicker  ratio   render     ms/frame
+1577    0     0.607   1.154    1.90    2434x1397  45.6
+1560    0.3   0.840   1.485    1.77    2434x1397  56.3
+3117    0     0.634   1.200    1.89    2434x1397  34.3
+3665    0     0.643   1.223    1.90    2434x1397  25.4
+3640    0.3   1.002   1.819    1.82    2434x1397  26.3
+3945    0     0.631   1.197    1.90    2434x1397  35.1
+3925    0.3   0.895   1.572    1.76    2434x1397  28.5

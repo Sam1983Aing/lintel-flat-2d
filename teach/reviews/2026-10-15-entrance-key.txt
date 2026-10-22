@@ -1,0 +1,3 @@
+P = code
+Q = scan
+(code: ?code=entrance,hall,wc. scan: the page as it is, Poly Haven scans. Same light in both.)

@@ -1,0 +1,3 @@
+X = scan
+Y = code
+(round 2, after the fixes from the first review. Same light in both.)

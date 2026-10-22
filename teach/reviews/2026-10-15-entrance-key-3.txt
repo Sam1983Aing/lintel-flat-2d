@@ -1,0 +1,4 @@
+P = v8 code, first pass
+Q = v7a code
+R = scan
+(round 3, iteration 8 first pass. Same light in all three.)

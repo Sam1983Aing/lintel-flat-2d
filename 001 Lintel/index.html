@@ -1,0 +1,578 @@
+<!doctype html>
+<html lang="en" class="on-desk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lintel Studio · Architecture, Build &amp; Interior Staging</title>
+  <meta name="description" content="Every home starts as a 1:200 plan. Lintel Studio is an architectural design, turnkey construction, and interior staging practice in Lisbon and Zurich." />
+  <!--
+    CREATIVE DIRECTION (iteration 9)
+    Concept     Every home starts as a plan, so the page opens on one. Then you
+                walk into it, and each room lifts off the paper as you step in,
+                demonstrating Lintel Studio's end-to-end Architecture, Build,
+                and Interior Staging capabilities.
+    Mood        precise, calm, material, quietly expensive
+    Palette     paper #efebe2, ink #1d1d1f, one accent: signal orange #f0500f with the stencil type
+                (oxide #b8452a with ?type=classic)
+    Type        Saira Stencil One (display, Sam's pick of 6 Oct, set in hero-options.js. ?type=classic is the
+                first Instrument Serif), Geist (body), Geist Mono (drawing annotations)
+    Motion      heavy Lenis scroll, a vertical dolly zoom from a 3 degree top view
+                to eye level, then a walk deep along Z, doorway by doorway
+    Signature   The plan is a real horizontal section: the house is cut at 1.2 m
+                and the cut is filled with ink (poché). Raising the cut makes the
+                walls grow out of the drawing. Each room stays ink on paper until
+                you step through its door, then the oxide line sweeps the real
+                material across it.
+  -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Saira+Stencil+One&family=Geist:wght@300;400;500&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="shared/fx-ui.css" />
+  <link rel="stylesheet" href="theme.css" />
+</head>
+<body class="on-desk">
+  <canvas id="gl" aria-hidden="true"></canvas>
+
+  <div class="loader" id="loader">
+    <div class="loader__center" id="loaderCenter">
+      <span class="loader__num" id="loadPct">0%</span>
+      <div class="loader__line">
+        <i class="loader__base" id="loadBase"></i>
+        <b class="loader__fill" id="loadFill"></b>
+        <span class="loader__tip" id="loadTip" aria-hidden="true"></span>
+      </div>
+      <p class="loader__sub" id="loadStage">Preparing 1 : 200 floor plan · Sheet A-101</p>
+    </div>
+  </div>
+
+  <div class="draft-tools" id="draftTools" aria-hidden="true">
+    <div class="draft-tool draft-tool--ruler" id="draftRuler">
+      <svg viewBox="0 0 370 50" width="370" height="50" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="rulerTopBevel" x1="0" y1="2" x2="0" y2="18" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#4c525b"/>
+            <stop offset="35%" stop-color="#383d44"/>
+            <stop offset="100%" stop-color="#262a30"/>
+          </linearGradient>
+          <linearGradient id="rulerSlotBrass" x1="0" y1="18" x2="370" y2="26" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#a87e3b"/>
+            <stop offset="28%" stop-color="#d8ad65"/>
+            <stop offset="55%" stop-color="#9b7232"/>
+            <stop offset="82%" stop-color="#caa05a"/>
+            <stop offset="100%" stop-color="#7f5b24"/>
+          </linearGradient>
+          <linearGradient id="rulerBotBevel" x1="0" y1="26" x2="0" y2="39" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#2c3037"/>
+            <stop offset="100%" stop-color="#191c20"/>
+          </linearGradient>
+          <linearGradient id="rulerWall3D" x1="0" y1="39" x2="0" y2="46" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#111317"/>
+            <stop offset="100%" stop-color="#08090b"/>
+          </linearGradient>
+          <linearGradient id="rulerGlintGrad" x1="0%" y1="0%" x2="100%" y2="20%">
+            <stop offset="0%" stop-color="#ffffff" stop-opacity="0"/>
+            <stop offset="45%" stop-color="#fff6e6" stop-opacity="0.22"/>
+            <stop offset="55%" stop-color="#ff834f" stop-opacity="0.18"/>
+            <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <!-- Ambient surface contact shadow -->
+        <rect x="4" y="8" width="364" height="40" rx="3" fill="rgba(0,0,0,0.48)"/>
+        <!-- 3D Front vertical extrusion wall (tabletop thickness) -->
+        <path d="M2 39H364L368 35V42L364 45.5H2C1.2 45.5 0.8 44.8 0.8 44V39H2Z" fill="url(#rulerWall3D)" stroke="rgba(0,0,0,0.75)" stroke-width="0.6"/>
+        <!-- 3D Right end-cap bevel profile -->
+        <polygon points="364,2 368.5,6 368.5,41.5 364,45.5 364,39 366,26 364,18" fill="#15181c" stroke="rgba(244,241,234,0.18)" stroke-width="0.6"/>
+        <!-- Sunlit top chamfer plane (metric scale face) -->
+        <path d="M2 2H364L365.5 18H1V3C1 2.4 1.4 2 2 2Z" fill="url(#rulerTopBevel)"/>
+        <!-- Top specular ridge highlight -->
+        <line x1="2" y1="2.5" x2="363.5" y2="2.5" stroke="rgba(255,255,255,0.42)" stroke-width="0.9"/>
+        <!-- Central 3D recessed triangular channel with brushed brass spine -->
+        <rect x="1" y="18" width="364" height="8" fill="#121417"/>
+        <rect x="1" y="19.5" width="364" height="4.8" fill="url(#rulerSlotBrass)" opacity="0.92"/>
+        <line x1="1" y1="18.2" x2="365" y2="18.2" stroke="rgba(0,0,0,0.8)" stroke-width="1"/>
+        <line x1="1" y1="20.2" x2="365" y2="20.2" stroke="rgba(255,248,225,0.45)" stroke-width="0.6"/>
+        <line x1="1" y1="25.8" x2="365" y2="25.8" stroke="rgba(255,255,255,0.22)" stroke-width="0.7"/>
+        <!-- Lower sloped bevel plane -->
+        <path d="M1 26H365.5L364 39H2C1.4 39 1 38.6 1 38V26Z" fill="url(#rulerBotBevel)"/>
+        <line x1="1.5" y1="38.6" x2="363.5" y2="38.6" stroke="rgba(255,255,255,0.16)" stroke-width="0.7"/>
+        <!-- Engraved 1:200 metric graduations along top chamfer -->
+        <g stroke="rgba(248,245,238,0.86)" stroke-width="1">
+          <!-- Major meter ticks (0 to 10m, spacing 33px) -->
+          <line x1="16" y1="2.2" x2="16" y2="12.5" stroke="#f0500f" stroke-width="1.3"/>
+          <line x1="49" y1="2.2" x2="49" y2="11.5"/><line x1="82" y1="2.2" x2="82" y2="12.5"/>
+          <line x1="115" y1="2.2" x2="115" y2="11.5"/><line x1="148" y1="2.2" x2="148" y2="12.5"/>
+          <line x1="181" y1="2.2" x2="181" y2="11.5"/><line x1="214" y1="2.2" x2="214" y2="12.5"/>
+          <line x1="247" y1="2.2" x2="247" y2="11.5"/><line x1="280" y1="2.2" x2="280" y2="12.5"/>
+          <line x1="313" y1="2.2" x2="313" y2="11.5"/><line x1="346" y1="2.2" x2="346" y2="12.5" stroke="#f0500f" stroke-width="1.3"/>
+        </g>
+        <!-- Sub-ticks every 3.3px -->
+        <g stroke="rgba(244,241,234,0.52)" stroke-width="0.75">
+          <line x1="22.6" y1="2.2" x2="22.6" y2="7"/><line x1="29.2" y1="2.2" x2="29.2" y2="7"/><line x1="32.5" y1="2.2" x2="32.5" y2="9.2"/><line x1="35.8" y1="2.2" x2="35.8" y2="7"/><line x1="42.4" y1="2.2" x2="42.4" y2="7"/>
+          <line x1="55.6" y1="2.2" x2="55.6" y2="7"/><line x1="62.2" y1="2.2" x2="62.2" y2="7"/><line x1="65.5" y1="2.2" x2="65.5" y2="9.2"/><line x1="68.8" y1="2.2" x2="68.8" y2="7"/><line x1="75.4" y1="2.2" x2="75.4" y2="7"/>
+          <line x1="88.6" y1="2.2" x2="88.6" y2="7"/><line x1="95.2" y1="2.2" x2="95.2" y2="7"/><line x1="98.5" y1="2.2" x2="98.5" y2="9.2"/><line x1="101.8" y1="2.2" x2="101.8" y2="7"/><line x1="108.4" y1="2.2" x2="108.4" y2="7"/>
+          <line x1="121.6" y1="2.2" x2="121.6" y2="7"/><line x1="128.2" y1="2.2" x2="128.2" y2="7"/><line x1="131.5" y1="2.2" x2="131.5" y2="9.2"/><line x1="134.8" y1="2.2" x2="134.8" y2="7"/><line x1="141.4" y1="2.2" x2="141.4" y2="7"/>
+          <line x1="154.6" y1="2.2" x2="154.6" y2="7"/><line x1="161.2" y1="2.2" x2="161.2" y2="7"/><line x1="164.5" y1="2.2" x2="164.5" y2="9.2"/><line x1="167.8" y1="2.2" x2="167.8" y2="7"/><line x1="174.4" y1="2.2" x2="174.4" y2="7"/>
+          <line x1="187.6" y1="2.2" x2="187.6" y2="7"/><line x1="194.2" y1="2.2" x2="194.2" y2="7"/><line x1="197.5" y1="2.2" x2="197.5" y2="9.2"/><line x1="200.8" y1="2.2" x2="200.8" y2="7"/><line x1="207.4" y1="2.2" x2="207.4" y2="7"/>
+          <line x1="220.6" y1="2.2" x2="220.6" y2="7"/><line x1="227.2" y1="2.2" x2="227.2" y2="7"/><line x1="230.5" y1="2.2" x2="230.5" y2="9.2"/><line x1="233.8" y1="2.2" x2="233.8" y2="7"/><line x1="240.4" y1="2.2" x2="240.4" y2="7"/>
+          <line x1="253.6" y1="2.2" x2="253.6" y2="7"/><line x1="260.2" y1="2.2" x2="260.2" y2="7"/><line x1="263.5" y1="2.2" x2="263.5" y2="9.2"/><line x1="266.8" y1="2.2" x2="266.8" y2="7"/><line x1="273.4" y1="2.2" x2="273.4" y2="7"/>
+          <line x1="286.6" y1="2.2" x2="286.6" y2="7"/><line x1="293.2" y1="2.2" x2="293.2" y2="7"/><line x1="296.5" y1="2.2" x2="296.5" y2="9.2"/><line x1="299.8" y1="2.2" x2="299.8" y2="7"/><line x1="306.4" y1="2.2" x2="306.4" y2="7"/>
+          <line x1="319.6" y1="2.2" x2="319.6" y2="7"/><line x1="326.2" y1="2.2" x2="326.2" y2="7"/><line x1="329.5" y1="2.2" x2="329.5" y2="9.2"/><line x1="332.8" y1="2.2" x2="332.8" y2="7"/><line x1="339.4" y1="2.2" x2="339.4" y2="7"/>
+        </g>
+        <g fill="rgba(248,245,238,0.78)" font-family="Geist Mono, monospace" font-size="6.5" font-weight="500" letter-spacing="0.06em">
+          <text x="19" y="15.8" fill="#ff7338">0</text>
+          <text x="84.5" y="15.8">2</text>
+          <text x="150.5" y="15.8">4</text>
+          <text x="216.5" y="15.8">6</text>
+          <text x="282.5" y="15.8">8</text>
+          <text x="330" y="15.8">10m</text>
+          <text x="16" y="34.8" fill="rgba(244,241,234,0.58)" font-size="6" letter-spacing="0.14em">LINTEL STUDIO · 1 : 200 ARCHITECTURAL SCALE</text>
+        </g>
+        <rect x="336" y="30" width="16" height="4.5" rx="0.8" fill="#f0500f"/>
+        <!-- Traveling metallic studio lamp glint across the ruler -->
+        <rect class="ruler-glint" x="1" y="2" width="76" height="37" fill="url(#rulerGlintGrad)" pointer-events="none"/>
+      </svg>
+    </div>
+    <div class="draft-tool draft-tool--pen" id="draftPen">
+      <svg viewBox="0 0 240 28" width="240" height="28" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="penCone" x1="0" y1="7" x2="0" y2="19" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#e3ddd0"/>
+            <stop offset="45%" stop-color="#a59e91"/>
+            <stop offset="100%" stop-color="#565149"/>
+          </linearGradient>
+          <linearGradient id="penGrip" x1="0" y1="5" x2="0" y2="21" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#5e646e"/>
+            <stop offset="35%" stop-color="#3a3f46"/>
+            <stop offset="75%" stop-color="#1e2126"/>
+            <stop offset="100%" stop-color="#101215"/>
+          </linearGradient>
+          <linearGradient id="penClip" x1="150" y1="2" x2="212" y2="6" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#8b9098"/>
+            <stop offset="50%" stop-color="#d8dde4"/>
+            <stop offset="100%" stop-color="#696e75"/>
+          </linearGradient>
+        </defs>
+        <!-- Cast shadow on table -->
+        <ellipse cx="126" cy="21.5" rx="108" ry="4.2" fill="rgba(0,0,0,0.45)"/>
+        <!-- Precision drafting lead / graphite nib (tip at x=0, y=13) -->
+        <path d="M0 13L8.5 11.4V14.6L0 13Z" fill="#22252a"/>
+        <line x1="0.5" y1="12.7" x2="7.5" y2="12" stroke="#f4f1ea" stroke-width="0.75" stroke-linecap="round"/>
+        <circle cx="0.8" cy="13" r="1.1" fill="#f0500f"/>
+        <!-- Machined 3D conical nose cone -->
+        <path d="M8.5 11.2L17 9.4V16.6L8.5 14.8Z" fill="#c9c2b4"/>
+        <path d="M17 9.4L34 5.8V20.2L17 16.6Z" fill="url(#penCone)"/>
+        <line x1="9" y1="11.6" x2="33.5" y2="6.8" stroke="rgba(255,255,255,0.55)" stroke-width="0.7"/>
+        <!-- 3D Cylindrical diamond-knurled metal grip -->
+        <rect x="34" y="5.5" width="42" height="15" rx="0.8" fill="url(#penGrip)" stroke="rgba(244,241,234,0.22)" stroke-width="0.6"/>
+        <g stroke="rgba(244,241,234,0.22)" stroke-width="0.65">
+          <line x1="38" y1="5.8" x2="38" y2="20.2"/><line x1="42" y1="5.8" x2="42" y2="20.2"/><line x1="46" y1="5.8" x2="46" y2="20.2"/><line x1="50" y1="5.8" x2="50" y2="20.2"/><line x1="54" y1="5.8" x2="54" y2="20.2"/><line x1="58" y1="5.8" x2="58" y2="20.2"/><line x1="62" y1="5.8" x2="62" y2="20.2"/><line x1="66" y1="5.8" x2="66" y2="20.2"/><line x1="70" y1="5.8" x2="70" y2="20.2"/><line x1="73" y1="5.8" x2="73" y2="20.2"/>
+        </g>
+        <line x1="34.5" y1="7.2" x2="75.5" y2="7.2" stroke="rgba(255,255,255,0.28)" stroke-width="0.8"/>
+        <!-- 3D Signal-orange identification collar ring -->
+        <rect x="76" y="5.2" width="7" height="15.6" rx="0.5" fill="#f0500f"/>
+        <rect x="76" y="5.2" width="7" height="4.2" fill="#ff8352" opacity="0.65"/>
+        <rect x="76" y="16.8" width="7" height="4" fill="#8f2900" opacity="0.7"/>
+        <!-- 3D Hexagonal barrel: 3 visible facets (Top sunlit facet, Middle facet, Bottom shadow facet) -->
+        <!-- Top sunlit facet -->
+        <polygon points="83,5.5 221,5.5 221,10.2 83,10.2" fill="#3c4149"/>
+        <!-- Middle flat facet -->
+        <rect x="83" y="10.2" width="138" height="6.2" fill="#23272c"/>
+        <!-- Bottom shadowed facet -->
+        <polygon points="83,16.4 221,16.4 221,20.5 83,20.5" fill="#101215"/>
+        <!-- Hexagonal facet ridge highlights -->
+        <line x1="83" y1="5.6" x2="221" y2="5.6" stroke="rgba(255,255,255,0.34)" stroke-width="0.7"/>
+        <line x1="83" y1="10.2" x2="221" y2="10.2" stroke="rgba(255,255,255,0.42)" stroke-width="0.85"/>
+        <line x1="83" y1="16.4" x2="221" y2="16.4" stroke="rgba(0,0,0,0.75)" stroke-width="0.8"/>
+        <!-- Barrel typography on middle facet -->
+        <text x="96" y="14.9" fill="rgba(244,241,234,0.68)" font-family="Geist Mono, monospace" font-size="5.6" font-weight="500" letter-spacing="0.16em">LINTEL · 2.0 MM HB · A-101</text>
+        <!-- 3D Raised metal pocket clip + shadow -->
+        <rect x="158" y="4.2" width="52" height="2" rx="1" fill="rgba(0,0,0,0.55)"/>
+        <path d="M158 4.2C158 2.8 160 2.2 163 2.2H205V5.5H201V3.8H162C160.5 3.8 159.5 4.2 159.5 5.2H158V4.2Z" fill="url(#penClip)"/>
+        <rect x="202" y="4.8" width="9" height="16.4" rx="0.8" fill="#555a63" stroke="rgba(255,255,255,0.28)" stroke-width="0.5"/>
+        <!-- 3D Stepped metal lead-advance push cap -->
+        <rect x="221" y="7" width="5" height="12" fill="#181a1e"/>
+        <rect x="226" y="6.2" width="11" height="13.6" rx="1.5" fill="url(#penGrip)" stroke="rgba(244,241,234,0.28)" stroke-width="0.6"/>
+        <line x1="227" y1="8.2" x2="236" y2="8.2" stroke="rgba(255,255,255,0.35)" stroke-width="0.8"/>
+      </svg>
+    </div>
+    <div class="draft-tool draft-tool--eraser" id="draftEraser">
+      <svg viewBox="0 0 86 44" width="86" height="44" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Surface contact shadow -->
+        <rect x="5" y="9" width="79" height="33" rx="4" fill="rgba(0,0,0,0.52)"/>
+        <!-- 3D Bottom/Front extrusion wall of rubber block (shows 3D height on table) -->
+        <path d="M3 29H80L83 25V33.5C83 35.2 81.6 36.5 79.8 36.5H6C4.2 36.5 3 35.2 3 33.5V29Z" fill="#b4ac9c" stroke="rgba(20,20,22,0.55)" stroke-width="0.7"/>
+        <!-- 3D Right side wall of rubber block -->
+        <polygon points="80,4 83,7.5 83,33.5 80,30" fill="#9c9485"/>
+        <!-- Top sunlit rubber block face -->
+        <rect x="3" y="3" width="77" height="27" rx="3" fill="#ece7db" stroke="rgba(29,29,31,0.32)" stroke-width="0.8"/>
+        <line x1="5" y1="4.2" x2="78" y2="4.2" stroke="rgba(255,255,255,0.75)" stroke-width="0.9"/>
+        <!-- 3D Dark architectural sleeve wrapping the center of the eraser -->
+        <!-- Sleeve front 3D vertical wall -->
+        <path d="M21 29.5H65V37.2H21V29.5Z" fill="#111317" stroke="rgba(244,241,234,0.2)" stroke-width="0.6"/>
+        <!-- Sleeve top face -->
+        <rect x="21" y="2.2" width="44" height="27.8" rx="1.2" fill="#23272c" stroke="rgba(244,241,234,0.32)" stroke-width="0.8"/>
+        <line x1="22" y1="3.4" x2="64" y2="3.4" stroke="rgba(255,255,255,0.24)" stroke-width="0.8"/>
+        <!-- Signal-orange stripe on top and continuing down the 3D front wall -->
+        <rect x="25.5" y="2.6" width="3.2" height="27" fill="#f0500f"/>
+        <rect x="25.5" y="29.6" width="3.2" height="7.3" fill="#a83205"/>
+        <text x="45.5" y="17.8" text-anchor="middle" fill="rgba(244,241,234,0.9)" font-family="Geist Mono, monospace" font-size="6.8" font-weight="500" letter-spacing="0.16em">LINTEL</text>
+        <text x="45.5" y="24.2" text-anchor="middle" fill="rgba(244,241,234,0.48)" font-family="Geist Mono, monospace" font-size="4.4" letter-spacing="0.14em">ARCH · SOFT</text>
+      </svg>
+    </div>
+  </div>
+
+  <header class="topbar">
+    <a class="mark" href="#" data-to="0">Lintel</a>
+    <span class="topbar__datum topbar__datum--left" aria-hidden="true"></span>
+    <nav class="topbar__nav" aria-label="Studio chapters">
+      <span class="nav-shimmer" aria-hidden="true"></span>
+      <span class="nav-dot top left" aria-hidden="true"></span>
+      <span class="nav-dot top right" aria-hidden="true"></span>
+      <span class="nav-dot bottom right" aria-hidden="true"></span>
+      <span class="nav-dot bottom left" aria-hidden="true"></span>
+      <a href="#services" data-to="hall"><span class="nav-tab__label">Services</span></a>
+      <a href="#craft" data-to="dining"><span class="nav-tab__label">Craft</span></a>
+      <a href="#practice" data-to="olive"><span class="nav-tab__label">Practice</span></a>
+      <a href="#team" data-to="bedroom"><span class="nav-tab__label">Team</span></a>
+      <a href="#process" data-to="gardenHouse"><span class="nav-tab__label">Process</span></a>
+    </nav>
+    <span class="topbar__datum topbar__datum--right" aria-hidden="true"></span>
+    <a class="btn-wrapper" href="#finale" data-to="end">
+      <div class="line horizontal top" aria-hidden="true"></div>
+      <div class="line vertical right" aria-hidden="true"></div>
+      <div class="line horizontal bottom" aria-hidden="true"></div>
+      <div class="line vertical left" aria-hidden="true"></div>
+      <div class="dot top left" aria-hidden="true"></div>
+      <div class="dot top right" aria-hidden="true"></div>
+      <div class="dot bottom right" aria-hidden="true"></div>
+      <div class="dot bottom left" aria-hidden="true"></div>
+      <span class="btn">
+        <span class="btn-text">Start a Project</span>
+        <svg class="btn-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M17.6744 11.4075L15.7691 17.1233C15.7072 17.309 15.5586 17.4529 15.3709 17.5087L3.69348 20.9803C3.22819 21.1186 2.79978 20.676 2.95328 20.2155L6.74467 8.84131C6.79981 8.67588 6.92419 8.54263 7.08543 8.47624L12.472 6.25822C12.696 6.166 12.9535 6.21749 13.1248 6.38876L17.5294 10.7935C17.6901 10.9542 17.7463 11.1919 17.6744 11.4075Z"></path>
+          <path d="M3.2959 20.6016L9.65986 14.2376"></path>
+          <path d="M17.7917 11.0557L20.6202 8.22724C21.4012 7.44619 21.4012 6.17986 20.6202 5.39881L18.4989 3.27749C17.7178 2.49645 16.4515 2.49645 15.6704 3.27749L12.842 6.10592"></path>
+          <path d="M11.7814 12.1163C11.1956 11.5305 10.2458 11.5305 9.66004 12.1163C9.07426 12.7021 9.07426 13.6519 9.66004 14.2376C10.2458 14.8234 11.1956 14.8234 11.7814 14.2376C12.3671 13.6519 12.3671 12.7021 11.7814 12.1163Z"></path>
+        </svg>
+      </span>
+    </a>
+  </header>
+
+  <section class="hero" id="hero" aria-label="Lintel Studio, Casa Serra ground floor plan">
+    <div class="hero__main">
+      <div class="hero__kicker">
+        <span class="hero__kicker-tag">Sheet A-101</span>
+        <span class="hero__kicker-sep" aria-hidden="true"></span>
+        <span class="hero__kicker-text">Architecture · Build · Staging</span>
+      </div>
+      <h1 class="hero__title">
+        <span class="mask"><span>Every house</span></span>
+        <span class="mask"><span>starts as</span></span>
+        <span class="mask"><span>a <em>plan</em></span></span>
+      </h1>
+      <p class="hero__lede">We draw the 1:200 blueprint, build the concrete and stone shell, and stage every room down to the furniture and art. Scroll to walk inside Casa Serra, our 946 m² turnkey commission in Sintra.</p>
+    </div>
+    <div class="titleblock" aria-hidden="true">
+      <svg class="titleblock__seal" viewBox="0 0 88 88" width="64" height="64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="44" cy="44" r="39" stroke="currentColor" stroke-width="1.5" stroke-dasharray="5 2.5"/>
+        <circle cx="44" cy="44" r="34" stroke="currentColor" stroke-width="0.9"/>
+        <circle cx="44" cy="44" r="22" stroke="#f0500f" stroke-width="1"/>
+        <path d="M6 36C18 33 30 39 42 36M4 44C17 41 29 47 41 44M7 52C19 49 31 55 43 52" stroke="#f0500f" stroke-width="0.9" stroke-linecap="round" opacity="0.72"/>
+        <text x="44" y="21" text-anchor="middle" fill="currentColor" font-family="Geist Mono, monospace" font-size="5.5" letter-spacing="0.16em">LINTEL STUDIO</text>
+        <text x="44" y="42.5" text-anchor="middle" fill="#f0500f" font-family="Geist Mono, monospace" font-size="6.4" font-weight="600" letter-spacing="0.14em">APPROVED</text>
+        <text x="44" y="50.5" text-anchor="middle" fill="currentColor" font-family="Geist Mono, monospace" font-size="5.2" letter-spacing="0.12em">1 : 200 PLAN</text>
+        <text x="44" y="71.5" text-anchor="middle" fill="currentColor" font-family="Geist Mono, monospace" font-size="5.2" letter-spacing="0.14em">A-101 · SINTRA</text>
+      </svg>
+      <div class="titleblock__head">
+        <span class="titleblock__badge">CONFIRMED</span>
+        <span class="titleblock__ref">ARCHITECTURAL STAMP · SHEET A-101</span>
+      </div>
+      <div class="titleblock__grid">
+        <div>
+          <p><span>Practice</span><i>01</i></p>
+          <b>Lintel Studio</b>
+          <em>Lisbon &amp; Zurich</em>
+        </div>
+        <div>
+          <p><span>Discipline</span><i>02</i></p>
+          <b>Plan · Build · Stage</b>
+          <em>Single Contract</em>
+        </div>
+        <div>
+          <p><span>Track Record</span><i>03</i></p>
+          <b>18 Yrs · 42 Estates</b>
+          <em>Est. 2008</em>
+        </div>
+        <div>
+          <p><span>Commission</span><i>04</i></p>
+          <b>Casa Serra (A-101)</b>
+          <em>Sintra · 946 m²</em>
+        </div>
+      </div>
+      <div class="titleblock__foot">
+        <span>REG. Nº LS-2026-101 · SCALE 1 : 200</span>
+        <svg class="titleblock__sig" viewBox="0 0 68 16" width="54" height="13" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M2 13C7 4 11 3 9 12C8 15 16 6 21 8C24 9 22 13 26 11C31 8 36 4 35 11C34 14 42 7 48 9C53 11 58 6 66 5" stroke="#f0500f" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <div class="spots" id="spots"></div>
+
+  <aside class="sw" id="studioWindow" data-lenis-prevent data-form="showcase-slides" data-theme="ivory" data-side="right" aria-label="Lintel Studio section card" aria-hidden="true">
+    <span class="sw__anchor" id="swAnchor" aria-hidden="true"></span>
+    <div class="sw__rail" aria-hidden="true"><b id="swScrollFill"></b></div>
+
+    <header class="sw__head">
+      <div class="sw__head-left">
+        <span class="sw__code">SECTION <b id="swNo">01 / 05</b></span>
+        <span class="sw__cat" id="swCategory">SERVICES</span>
+      </div>
+      <div class="sw__head-right">
+        <button type="button" class="sw__toggle" id="swToggleBtn" aria-label="Minimize card to view full 3D room">
+          <span id="swToggleText">View 3D Room</span>
+        </button>
+      </div>
+    </header>
+
+    <div class="sw__body" id="swBody" data-lenis-prevent tabindex="0">
+      <div class="sw__hero sw__anim">
+        <p class="sw__kicker" id="swKicker">01 · Services · Entrance Hall</p>
+        <h2 class="sw__title" id="swTitle">ONE STUDIO FROM SKETCH <em>TO KEY HANDOVER</em></h2>
+        <p class="sw__summary" id="swSummary"></p>
+      </div>
+
+      <section class="sw__module sw__anim" id="swModuleWrap">
+        <div class="sw__module-body" id="swModuleBody"></div>
+      </section>
+
+      <div class="sw__kpis sw__anim" id="swKpis"></div>
+
+      <section class="sw__proof sw__anim">
+        <div class="sw__proof-head">
+          <span class="sw__proof-dot" aria-hidden="true"></span>
+          <span class="sw__proof-label">IN THIS 3D SCENE · <b id="swTargetLabel">4.2 M OAK PIVOT &amp; CREDENZA</b></span>
+        </div>
+        <p class="sw__proof-room" id="swRoomMeta">Casa Serra Entrance Hall · 72 m² · 4.80 m ceiling</p>
+        <p class="sw__text" id="swText"></p>
+        <dl class="sw__facts" id="swFacts"></dl>
+      </section>
+
+      <section class="sw__deliv sw__anim">
+        <div class="sw__sub-row">
+          <h3 class="sw__sub">Included Scope &amp; Deliverables</h3>
+          <span class="sw__sub-tag">SINGLE CONTRACT</span>
+        </div>
+        <ul class="sw__list" id="swDeliverables"></ul>
+      </section>
+    </div>
+
+    <footer class="sw__foot">
+      <button type="button" class="sw__more" id="swMoreBtn">
+        <span id="swMoreText">More Details</span>
+        <i aria-hidden="true">↓</i>
+      </button>
+      <button type="button" class="sw__cta" id="swCtaBtn">
+        <span id="swCtaText">Start Your Project</span>
+        <i aria-hidden="true">→</i>
+      </button>
+    </footer>
+  </aside>
+
+  <nav class="rnav" id="roomNav" aria-label="Guided room navigation" aria-hidden="true">
+    <button type="button" class="rnav__btn rnav__btn--prev" id="rnavPrev" aria-label="Previous stop">
+      <span aria-hidden="true">←</span>
+      <span>Prev</span>
+    </button>
+    <div class="rnav__status">
+      <div class="rnav__meta">
+        <span class="rnav__step" id="rnavStep">STOP <b>01</b> / 05</span>
+        <span class="rnav__sep" aria-hidden="true">·</span>
+        <span class="rnav__room" id="rnavRoom">ENTRANCE HALL</span>
+      </div>
+      <i class="rnav__bar"><b id="rnavFill"></b></i>
+    </div>
+    <button type="button" class="rnav__btn rnav__btn--win" id="rnavWinBtn" aria-label="Toggle section card">
+      <span id="rnavWinText">Hide Card</span>
+    </button>
+    <button type="button" class="rnav__btn rnav__btn--next" id="rnavNext">
+      <span id="rnavNextLabel">Next: Dining &amp; Kitchen</span>
+      <i aria-hidden="true">→</i>
+    </button>
+  </nav>
+
+  <div class="hint" id="hint" role="button" tabindex="0" aria-label="Scroll or click to enter the 3D plan">
+    <span class="hint__text" id="hintText">Scroll or click to enter the plan</span>
+    <i class="hint__line"><b id="hintFill"></b></i>
+    <span class="hint__scroll" aria-hidden="true">
+      <span class="hint__mouse"><i class="hint__wheel"></i></span>
+      <span class="hint__chevrons">
+        <svg viewBox="0 0 12 7" width="11" height="6" fill="none"><path d="M1 1L6 5.5L11 1" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg viewBox="0 0 12 7" width="11" height="6" fill="none"><path d="M1 1L6 5.5L11 1" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+    </span>
+  </div>
+
+  <div class="veil" id="veil" aria-hidden="true"></div>
+
+  <footer class="corner" aria-label="Lighting study">
+    <b class="corner__label">Light</b>
+    <div class="tod" role="group" aria-label="Time of day">
+      <button type="button" class="tod__btn" data-tod="morning">Morning</button>
+      <button type="button" class="tod__btn" data-tod="noon">Noon</button>
+      <button type="button" class="tod__btn is-active" data-tod="golden" aria-pressed="true">Golden</button>
+      <button type="button" class="tod__btn" data-tod="night">Night</button>
+    </div>
+  </footer>
+
+  <main class="track" id="track"></main>
+
+  <section class="finale" id="finale" aria-label="Start a project with Lintel Studio">
+    <div class="finale-cta" id="paperSheet">
+      <div class="finale-cta__glow" aria-hidden="true"></div>
+
+      <header class="finale-cta__top">
+        <div class="finale-cta__badge">
+          <span class="finale-cta__dot" aria-hidden="true"></span>
+          <span>2026 / 2027 COMMISSIONS · 2 OF 4 ANNUAL SLOTS OPEN</span>
+        </div>
+        <div class="finale-cta__offices">
+          <span>LISBON · RUA GARRETT 48</span>
+          <span>ZURICH · DUFOURSTRASSE 90</span>
+        </div>
+      </header>
+
+      <div class="finale-cta__hero">
+        <div class="finale-cta__copy">
+          <h2 class="finale-cta__title">Ready to build <em>your house?</em></h2>
+          <p class="finale-cta__lede">Book a private 30-minute architectural review with founding partners Mateus Serra, Henrik Vogt, and Clara Vale. Share a coastal plot, a renovation brief, or request our 2026 fee dossier.</p>
+        </div>
+        <div class="finale-cta__pillars">
+          <div class="finale-cta__pillar">
+            <b>1 CONTRACT</b>
+            <span>Plan, build &amp; stage under one locked lump-sum price</span>
+          </div>
+          <div class="finale-cta__pillar">
+            <b>-38% SOURCING</b>
+            <span>Direct from 14 European quarries &amp; our Lisbon CNC mill</span>
+          </div>
+          <div class="finale-cta__pillar">
+            <b>10-YR WARRANTY</b>
+            <span>Full structural, roof, pool &amp; climate protection</span>
+          </div>
+        </div>
+      </div>
+
+      <form class="finale-cta__form" id="inquiryForm">
+        <input type="hidden" id="inquiryScope" name="scope" value="Full Turnkey Residence" />
+        <div class="finale-cta__scopes" role="group" aria-label="Select project scope">
+          <span class="finale-cta__scope-lbl">Select Scope:</span>
+          <button type="button" class="inquiry__chip is-active" data-scope="Full Turnkey Residence" aria-pressed="true">Full Turnkey Estate · €4,800/m²</button>
+          <button type="button" class="inquiry__chip" data-scope="Interior Staging & Curation" aria-pressed="false">Interior Staging · €1,350/m²</button>
+          <button type="button" class="inquiry__chip" data-scope="Architectural Planning" aria-pressed="false">1:200 Planning · €420/m²</button>
+          <button type="button" class="inquiry__chip" data-scope="General Information & Dossier" aria-pressed="false">Request 2026 Dossier</button>
+        </div>
+
+        <div class="finale-cta__bar">
+          <label class="finale-cta__field">
+            <span>Your Name *</span>
+            <input type="text" id="inquiryName" name="name" placeholder="Helena Vasconcelos" required />
+          </label>
+          <label class="finale-cta__field">
+            <span>Email or WhatsApp *</span>
+            <input type="text" id="inquiryContact" name="contact" placeholder="helena@domain.com · +351 912 000 000" required />
+          </label>
+          <label class="finale-cta__field">
+            <span>Location &amp; Est. Area</span>
+            <input type="text" id="inquiryLoc" name="location" placeholder="Sintra / Zurich · ~650 m²" />
+          </label>
+          <button type="submit" class="finale-cta__submit">
+            <span>Book Partner Call</span>
+            <i aria-hidden="true">→</i>
+          </button>
+        </div>
+      </form>
+
+      <div class="inquiry__done" id="inquiryDone" hidden>
+        <p class="inquiry__done-kicker">Commission Request Registered · Ref. LTL-2026</p>
+        <p class="inquiry__done-text" id="inquiryDoneSummary"></p>
+        <div class="inquiry__done-actions">
+          <a class="finale-cta__submit" href="mailto:partners@lintel.studio">Email partners@lintel.studio →</a>
+          <button type="button" class="link" id="inquiryReset">Edit details</button>
+          <a class="link" href="#" data-to="0">Replay 3D Walk ↑</a>
+        </div>
+      </div>
+
+      <footer class="finale-cta__foot">
+        <div class="finale-cta__jumps">
+          <span>Jump to section:</span>
+          <a href="#services" data-to="hall">01 Services</a>
+          <a href="#craft" data-to="dining">02 Craft</a>
+          <a href="#practice" data-to="olive">03 Practice</a>
+          <a href="#team" data-to="bedroom">04 Team</a>
+          <a href="#process" data-to="gardenHouse">05 Process</a>
+        </div>
+        <div class="finale-cta__actions">
+          <a class="finale-cta__mail" href="mailto:partners@lintel.studio">partners@lintel.studio</a>
+          <a class="finale-cta__replay" href="#" data-to="0">Replay 3D Walk from 1:200 Plan ↑</a>
+        </div>
+      </footer>
+    </div>
+  </section>
+
+  <aside class="file" id="file" aria-hidden="true" aria-labelledby="fileTitle">
+    <button class="file__close" id="fileClose">Close ×</button>
+    <p class="file__no" id="fileNo"></p>
+    <h3 class="file__title" id="fileTitle"></h3>
+    <p class="file__time" id="fileTime"></p>
+    <p class="file__text" id="fileText"></p>
+    <div class="file__section" id="fileDeliverablesWrap" hidden>
+      <p class="file__sub">Scope &amp; Deliverables</p>
+      <ul class="file__deliverables" id="fileDeliverables"></ul>
+    </div>
+    <p class="file__sub">Specification &amp; Built Proof</p>
+    <ul class="file__facts" id="fileFacts"></ul>
+    <div class="file__footer">
+      <a class="btn-wrapper btn-wrapper--solid file__cta" id="fileCta" href="#finale">
+        <div class="line horizontal top" aria-hidden="true"></div>
+        <div class="line vertical right" aria-hidden="true"></div>
+        <div class="line horizontal bottom" aria-hidden="true"></div>
+        <div class="line vertical left" aria-hidden="true"></div>
+        <div class="dot top left" aria-hidden="true"></div>
+        <div class="dot top right" aria-hidden="true"></div>
+        <div class="dot bottom right" aria-hidden="true"></div>
+        <div class="dot bottom left" aria-hidden="true"></div>
+        <span class="btn">
+          <span class="btn-text">Inquire about this scope</span>
+          <svg class="btn-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M17.6744 11.4075L15.7691 17.1233C15.7072 17.309 15.5586 17.4529 15.3709 17.5087L3.69348 20.9803C3.22819 21.1186 2.79978 20.676 2.95328 20.2155L6.74467 8.84131C6.79981 8.67588 6.92419 8.54263 7.08543 8.47624L12.472 6.25822C12.696 6.166 12.9535 6.21749 13.1248 6.38876L17.5294 10.7935C17.6901 10.9542 17.7463 11.1919 17.6744 11.4075Z"></path>
+            <path d="M3.2959 20.6016L9.65986 14.2376"></path>
+            <path d="M17.7917 11.0557L20.6202 8.22724C21.4012 7.44619 21.4012 6.17986 20.6202 5.39881L18.4989 3.27749C17.7178 2.49645 16.4515 2.49645 15.6704 3.27749L12.842 6.10592"></path>
+            <path d="M11.7814 12.1163C11.1956 11.5305 10.2458 11.5305 9.66004 12.1163C9.07426 12.7021 9.07426 13.6519 9.66004 14.2376C10.2458 14.8234 11.1956 14.8234 11.7814 14.2376C12.3671 13.6519 12.3671 12.7021 11.7814 12.1163Z"></path>
+          </svg>
+        </span>
+      </a>
+    </div>
+  </aside>
+
+  <div class="nogl" id="nogl" hidden><p>This page builds a house in real time and needs WebGL 2.</p></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+  <script src="shared/fx-core.js"></script>
+  <script src="shared/fx-post.js"></script>
+  <script src="shared/fx-paint.js"></script>
+  <script src="shared/fx-experience.js"></script>
+  <script src="staging.js"></script>
+  <script src="hero-options.js"></script>
+  <script src="light-options.js"></script>
+  <script src="facade-options.js"></script>
+  <script src="code-sky.js"></script>
+  <script src="code-materials.js"></script>
+  <script src="house-looks.js"></script>
+  <script src="scene.js"></script>
+</body>
+</html>

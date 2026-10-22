@@ -1,0 +1,68 @@
+Facade, iteration 8, first pass (15 Oct). tools/flicker.mjs at 1728x992, DPR 2.
+
+1. The walk (scroll stretches; on a first walk the front is still the drawing at 120 to 387). Same render size both.
+== 001%20Lintel/v8a/
+1728x992 at 2x, crop 1037x635
+at      step  move    flicker  ratio   render     ms/frame
+120     0.05  1.318   2.097    1.59    2470x1418  45.2
+170     0.05  1.773   2.728    1.54    2470x1418  49.2
+620     0     NaN     1.001    0.00    1581x907   35.5
+264     0.05  0.899   1.497    1.67    2470x1418  52.2
+387     0.05  1.296   2.162    1.67    2470x1418  61.9
+3270    0.05  5.024   7.910    1.57    1581x907   36.2
+3420    0.05  0.000   0.000    0.00    1757x1009  26.9
+frames kept in /private/tmp/claude-501/-Users-sam-Projects-Claude-Code-014-Flat-3D/a6ba32f3-59fd-4995-ad5b-68ff65f0ad70/scratchpad/flk-00120intelv8a
+== 001%20Lintel/
+1728x992 at 2x, crop 1037x635
+at      step  move    flicker  ratio   render     ms/frame
+120     0.05  1.278   2.194    1.72    2470x1418  68.8
+170     0.05  1.795   2.972    1.66    2470x1418  77.3
+620     0     NaN     1.018    0.00    1581x907   59.4
+264     0.05  1.056   1.838    1.74    2470x1418  62.9
+387     0.05  1.292   2.261    1.75    2470x1418  100.4
+3270    0.05  5.126   8.519    1.66    1581x907   61.0
+3420    0.05  0.000   0.000    0.00    1757x1009  52.7
+frames kept in /private/tmp/claude-501/-Users-sam-Projects-Claude-Code-014-Flat-3D/a6ba32f3-59fd-4995-ad5b-68ff65f0ad70/scratchpad/flk-00120intel
+
+pops (tools/pops.sh): pixels per million a frame that jump more than 48 levels
+  v8a: 120 2350, 170 2315, 620 hold 319, 264 1333, 387 5747, 3270 9685, 3420 0
+  now: 120 2156, 170 2643, 620 hold 479, 264 1401, 387 5891, 3270 10769, 3420 0
+  (the 3270 crop is the garden, untouched: the two runs differ in the garden olive's shadow, timing. The 620 hold is indoors: the drifting dust, which moves with the clock, in a slower run)
+
+2. The forecourt built, from far above (CAMSEG, ?at=600&steady), interleaved v8a, now, v8a, now:
+== 001%20Lintel/v8a/
+1728x992 at 2x, crop 1037x635
+at      step  move    flicker  ratio   render     ms/frame
+600     0     NaN     NaN      0.00    2434x1397  33.1
+top1200 cam   2.422   3.835    1.58    3456x1984  -
+top300  cam   7.182   12.167   1.69    3456x1984  -
+high30  cam   3.332   4.675    1.40    2434x1397  -
+approach cam   1.881   2.907    1.55    2434x1397  -
+frames kept in /private/tmp/claude-501/-Users-sam-Projects-Claude-Code-014-Flat-3D/a6ba32f3-59fd-4995-ad5b-68ff65f0ad70/scratchpad/fc-10470
+== 001%20Lintel/
+1728x992 at 2x, crop 1037x635
+at      step  move    flicker  ratio   render     ms/frame
+600     0     NaN     NaN      0.00    2434x1397  26.2
+top1200 cam   2.316   3.686    1.59    3456x1984  -
+top300  cam   5.099   8.768    1.72    3456x1984  -
+high30  cam   2.883   4.005    1.39    2434x1397  -
+approach cam   1.756   2.745    1.56    2434x1397  -
+frames kept in /private/tmp/claude-501/-Users-sam-Projects-Claude-Code-014-Flat-3D/a6ba32f3-59fd-4995-ad5b-68ff65f0ad70/scratchpad/fc-10470
+== 001%20Lintel/v8a/
+1728x992 at 2x, crop 1037x635
+at      step  move    flicker  ratio   render     ms/frame
+600     0     NaN     NaN      0.00    2434x1397  29.9
+top1200 cam   2.424   3.833    1.58    3456x1984  -
+top300  cam   7.190   12.183   1.69    3456x1984  -
+high30  cam   3.346   4.693    1.40    2434x1397  -
+approach cam   1.886   2.915    1.55    2434x1397  -
+frames kept in /private/tmp/claude-501/-Users-sam-Projects-Claude-Code-014-Flat-3D/a6ba32f3-59fd-4995-ad5b-68ff65f0ad70/scratchpad/fc-10470
+== 001%20Lintel/
+1728x992 at 2x, crop 1037x635
+at      step  move    flicker  ratio   render     ms/frame
+600     0     NaN     NaN      0.00    2434x1397  83.5
+top1200 cam   2.279   3.635    1.60    3456x1984  -
+top300  cam   5.031   8.669    1.72    3456x1984  -
+high30  cam   2.841   3.938    1.39    2434x1397  -
+approach cam   1.736   2.725    1.57    2434x1397  -
+frames kept in /private/tmp/claude-501/-Users-sam-Projects-Claude-Code-014-Flat-3D/a6ba32f3-59fd-4995-ad5b-68ff65f0ad70/scratchpad/fc-10470

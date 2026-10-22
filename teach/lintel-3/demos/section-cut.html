@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Section plan with lids</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #ede8dc; color: #1d1b18; font: 14px/1.45 -apple-system, "Helvetica Neue", Arial, sans-serif; overflow: hidden; }
+  canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+  .panel { position: fixed; left: 16px; top: 16px; width: 260px; padding: 14px 16px; background: rgba(255, 253, 248, 0.94); border: 1px solid rgba(29, 27, 24, 0.2); }
+  .panel h1 { margin: 0 0 6px; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; }
+  .panel label { display: block; margin-top: 9px; }
+  .panel input[type=range] { width: 100%; margin: 2px 0 0; }
+  .panel p { margin: 10px 0 0; color: #6b655c; font-size: 12.5px; }
+  @media (max-width: 700px) { .panel { top: auto; bottom: 16px; right: 16px; width: auto; } }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div class="panel">
+  <h1>Section plan with lids</h1>
+  <label><input type="checkbox" id="lids" checked> Lids on the cut walls</label>
+  <label><input type="checkbox" id="play"> Open and close on its own</label>
+  <label>Open the view <input type="range" id="open" min="0" max="1" step="0.001" value="0"></label>
+  <label>Cut height <input type="range" id="cut" min="0.2" max="3.2" step="0.01" value="1.2"></label>
+  <p>Untick the lids, then drag "Open the view" a little. The walls change weight as the view tilts. That change is the blinking.</p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.min.js"></script>
+<script>
+/* Section plan with lids
+   Card: "The plan is a real cut" in ../02-techniques.md
+
+   A floor plan is a house sliced at about 1.2 m and seen from straight above. Here the slice is real:
+   one clipping plane cuts every wall, and a very long lens from far away flattens the view into a drawing.
+   A cut wall is hollow, so each wall piece also gets a flat lid of ink that rides just under the cut.
+   Without the lids the "ink" is only whatever the camera happens to see inside the hollow walls. */
+
+// ---- the knobs ----
+const CUT = 1.2;        // metres above the floor where the plan cuts the house. Real plans cut at about this height
+const LENS_FLAT = 3;    // degrees. A lens this long, from far away, has almost no perspective. That is the flat drawing
+const LENS_OPEN = 40;   // degrees, the lens once the view has opened into 3D
+const TILT_OPEN = 56;   // degrees away from straight down once the view has opened
+const WALL_H = 2.8;     // metres
+const LID_DROP = 0.004; // the lid rides this far under the cut. Exactly at the cut, the plane would slice it off too
+const FRAME = 6.4;      // metres from the middle of the plan to the top of the frame, the same at every lens
+const PAPER = 0xede8dc, INK = 0x1d1b18;
+
+// The house: wall pieces as [x0, z0, x1, z1] in metres, seen from above.
+const WALLS = [
+  [-6, -4, 6, -3.7], [-6, 3.7, -1.2, 4], [0.2, 3.7, 6, 4], [-6, -3.7, -5.7, 3.7], [5.7, -3.7, 6, 3.7],   // outside walls, a door gap in the south one
+  [-1, -3.7, -0.85, 0.6], [-1, 1.7, -0.85, 3.7], [-0.85, -0.6, 2.4, -0.45], [3.5, -0.6, 5.7, -0.45],     // partitions with two openings
+];
+
+const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('c'), antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(PAPER);
+const camera = new THREE.PerspectiveCamera(LENS_FLAT, 1, 1, 100);
+camera.up.set(0, 0, -1);                                  // north is up on the sheet, also when the camera looks straight down
+scene.add(new THREE.HemisphereLight(0xffffff, 0xcfc6b4, 1.6));
+const sun = new THREE.DirectionalLight(0xffffff, 1.4);
+sun.position.set(-4, 8, 5);
+scene.add(sun);
+
+// The cut: one plane for the whole renderer. Nothing above it is drawn.
+const cutPlane = new THREE.Plane(new THREE.Vector3(0, -1, 0), CUT);
+renderer.clippingPlanes = [cutPlane];
+
+scene.add(new THREE.Mesh(new THREE.PlaneGeometry(80, 80).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ color: PAPER })));
+
+// A wall is a hollow box. Its outside is plaster, its inside is ink, and it has no bottom (the floor is down there).
+const outside = new THREE.MeshLambertMaterial({ color: 0xf7f3ea });
+const inside = new THREE.MeshBasicMaterial({ color: INK, side: THREE.BackSide });
+const edge = new THREE.LineBasicMaterial({ color: INK });
+const lids = new THREE.Group();
+scene.add(lids);
+WALLS.forEach(([x0, z0, x1, z1]) => {
+  const w = x1 - x0, d = z1 - z0;
+  const geo = new THREE.BoxGeometry(w, WALL_H, d).translate(x0 + w / 2, WALL_H / 2, z0 + d / 2);
+  const faces = (m) => [m, m, m, null, m, m];             // a box has six faces: +x, -x, top, bottom, +z, -z. The bottom is left out
+  scene.add(new THREE.Mesh(geo, faces(outside)), new THREE.Mesh(geo, faces(inside)));
+  scene.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo), edge));
+  // the lid: a flat piece of ink the size of the wall's footprint
+  const lid = new THREE.PlaneGeometry(w, d).rotateX(-Math.PI / 2).translate(x0 + w / 2, 0, z0 + d / 2);
+  lids.add(new THREE.Mesh(lid, new THREE.MeshBasicMaterial({ color: INK })));
+});
+
+const ui = {};
+['lids', 'play', 'open', 'cut'].forEach((id) => { ui[id] = document.getElementById(id); });
+
+function resize() {
+  renderer.setSize(innerWidth, innerHeight, false);
+  camera.aspect = innerWidth / innerHeight;
+}
+addEventListener('resize', resize);
+resize();
+
+function frame(now) {
+  if (ui.play.checked) ui.open.value = 0.5 - 0.5 * Math.cos(now / 1800);
+  const open = +ui.open.value, e = open * open * (3 - 2 * open);
+  const cut = +ui.cut.value;
+
+  cutPlane.constant = cut;
+  lids.visible = ui.lids.checked && cut < WALL_H;         // above the walls there is nothing to close
+  lids.position.y = cut - LID_DROP;                       // the lids follow the cut
+
+  // One move from drawing to 3D: the lens widens, the camera tilts, and it comes closer so the plan keeps its size.
+  const lens = LENS_FLAT + (LENS_OPEN - LENS_FLAT) * e, tilt = TILT_OPEN * e * Math.PI / 180;
+  const dist = FRAME / Math.tan(lens * Math.PI / 360);
+  camera.fov = lens;
+  camera.position.set(0, Math.cos(tilt) * dist, Math.sin(tilt) * dist);
+  camera.near = Math.max(0.5, dist - 40);
+  camera.far = dist + 40;
+  camera.lookAt(0, 0, 0);
+  camera.updateProjectionMatrix();
+
+  renderer.render(scene, camera);
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>

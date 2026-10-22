@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Casa Larga. A house on one line.</title>
+  <meta name="description" content="Casa Larga, Coll de Marès, Mallorca. A floor plan you can walk into.">
+  <link rel="icon" href="data:,">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.css">
+  <link rel="stylesheet" href="css/style.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+<body>
+  <canvas id="gl" aria-hidden="true"></canvas>
+  <div id="grain" aria-hidden="true"></div>
+
+  <header id="bar">
+    <span class="mark">Casa Larga</span>
+    <span id="hud" class="chip" aria-hidden="true">
+      <span>LENS <b id="hud-lens">2.0°</b></span>
+      <span>HEIGHT <b id="hud-height">1 718 m</b></span>
+      <span>CUT <b id="hud-cut">+1.20 m</b></span>
+    </span>
+  </header>
+
+  <section id="hero" class="overlay">
+    <p class="eyebrow">Coll de Marès, Mallorca <span class="wide">&nbsp;·&nbsp; Ground floor plan</span> &nbsp;·&nbsp; A-101</p>
+    <h1><span class="l"><span>A house</span></span><span class="l"><span>on <em>one line.</em></span></span></h1>
+    <p class="lede"><span class="wide">Forty metres from the front door to the tree in the courtyard. </span>This drawing is the building. Scroll and walk into it.</p>
+    <p class="cue"><i></i> Scroll</p>
+  </section>
+
+  <aside id="cap-lift" class="overlay cap">
+    <p class="no">02 &nbsp; The lift</p>
+    <p class="say">The plan was never a picture. It is the house, cut at 1.2 m. Now the cut rises.</p>
+  </aside>
+
+  <aside id="cap-fore" class="overlay cap">
+    <p class="no">03 &nbsp; The forecourt</p>
+    <p class="say">Eight metres to the door. Everything ahead is still ink.</p>
+  </aside>
+
+  <aside id="cap-hall" class="overlay cap">
+    <p class="no">04 &nbsp; Entrance hall &nbsp; 4.00 × 7.00</p>
+    <p class="say">Limestone, oak, lime plaster. The living room is next, and it is still a drawing.</p>
+  </aside>
+
+  <nav id="rail" aria-hidden="true">
+    <span data-at="0">01 Sheet</span>
+    <span data-at="0.06">02 Lift</span>
+    <span data-at="0.56">03 Forecourt</span>
+    <span data-at="0.8">04 Hall</span>
+  </nav>
+
+  <div id="loading"><span>Drawing the plan</span></div>
+
+  <main id="track"></main>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
