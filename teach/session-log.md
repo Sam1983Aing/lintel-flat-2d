@@ -2759,3 +2759,29 @@ Before it, in the same session, a run of replies to comments on X and LinkedIn, 
 **Sam** (a screenshot of the private `lintel-source` on GitHub, which still shows `001 Lintel` beside the other nine pages): "just make sure that the clean folder from the interactive 3D landing page of 002 lintel flat 2D has its own repo. And not together with the lintel-source."
 
 **What came back:** this folder became its own git repository, one first commit tagged `v10`, pushed to a new private GitHub repository, `Sam1983Aing/lintel-flat-2d`. The ignore rules were fixed on the way: `assets/` had matched every folder of that name, which would have left v10's photos out of a clone, so it now means the top-level scans only. `lintel-source` stays 014's and was not touched.
+
+### 228. "Rename it to be 008" (22 Oct)
+
+**Sam:** "If we rename the folder 002 Lintel Flat 2D to 008 instead, will that conflict with anything? Because right now that's the current correct numbering." Then, after hearing that 008 to 011 are Codex studies of 13 Oct: "Okay, then rename Lintel Flat to be 008 instead."
+
+**What came back:** the folder is `008 Lintel Flat 2D`, the next number after `007 Kelingking Beach`. Every note that spells out the path was updated (GEMINI.md, two briefs, both READMEs, the previews in 014's launch.json). The git repo and the GitHub repository did not need to change. `008 WEFT` and the other Codex studies (009 to 011, IMPRESSION) were left where they are for now.
+
+### 229. "A live site link to the private lintel-flat-2d repo" (23 Oct)
+
+**Sam:** "Did we have a live site for the final version?" (No: casa-serra still showed the 12 Oct demo, and the Aura copy was saved, not published.) Then: "So just want to make sure I have a live site link to the private lintel-flat-2d repo."
+
+**What came back:** GitHub refused Pages on the private repository ("Your current plan does not support GitHub Pages for this repository"). Sam picked a separate public repository for the page alone: `Sam1983Aing/lintel-live`, served at https://sam1983aing.github.io/lintel-live/, built by `tools/build-live.mjs` (v10's files, scripts minified, no briefs or notes). Tested from a sub-path first: ten stops match v10, no missing files. `lintel-flat-2d` stays private and shows the link in its About box.
+
+**Worth saying on camera:** a private repository and a public page are two different things. The page is public the moment it is live, so only the page goes out, and the notes and the history stay private.
+
+### 230. "Can you put my repo public?" (28 Oct)
+
+**Sam:** "Can you put my repo public?" Asked first, since it reverses the choice of a minified live copy and Lintel is listed on Aura: "Yes, make it public."
+
+**What came back:** a scan before the switch (no keys, tokens or passwords, the commit email already public through casa-serra), then `lintel-flat-2d` made public. The full source of every version and the teach notes are now readable at https://github.com/Sam1983Aing/lintel-flat-2d.
+
+### 231. "The landing page version only" (28 Oct)
+
+**Sam:** "What I wanted to share is the landing page version only. I don't want to include the pages, there's like a few options, 000 to 009, I don't know what it is. So can you remove it?"
+
+**What came back:** the 000 to 009 list was 014's README, still sitting under this one, plus 014's `PROGRESS.md` (both copied over on 17 Oct). The README now opens on Lintel alone (what it is, the live link, what is in the folder), and `PROGRESS.md` and `brief-plan-to-3d.md` (the tool brief, which belongs to `3D Tool`) are gone from here. Their originals stay in `014 Flat 3D/`.

@@ -1,48 +1,42 @@
-# 002 Lintel Flat 2D
+# Lintel · Casa Serra
 
-Lintel, finished. An architecture studio landing page where a 1:200 floor plan rises into a 3D house you walk through room by room. The final version is `001 Lintel/v10/` (21 Oct 2026). Its standalone file is `lintel.html` and the Aura copy is `lintel-aura.html` (see "The standalone file for Aura" below).
+An architecture studio landing page. It opens on a blueprint lying on a dark drafting desk. As you scroll, the 1:200 floor plan rises into a 3D house and you walk through it room by room. Each room stays an ink drawing until you step in, then its real materials sweep across it. The house, its furniture, its materials and the sky are all built in code with Three.js, GSAP and Lenis. There are no 3D models or texture files.
 
-Where it came from: built with Claude Code in `Claude Code/014 Flat 3D/` up to v8c (16 Oct), copied on 17 Oct to `Gemini/Flat 2D/` and carried on there to v10, then moved here on 22 Oct 2026. The table below still lists the other flat-3D pages. They stayed in `014 Flat 3D/`, and only Lintel is in this folder.
+**Live:** https://sam1983aing.github.io/lintel-live/
 
----
+## What is here
 
-(The rest is the README this folder was copied with, kept as it was.)
+- `001 Lintel/v10/` is the final version (21 Oct 2026). Open this one.
+- `001 Lintel/v1/` to `001 Lintel/v8d/` are the earlier versions, each frozen as it was signed off.
+- `lintel.html` is v10 in one file that opens with a double-click. `lintel-aura.html` is the lighter copy saved in Aura.
+- `shared/` is the engine the earlier versions use (`shared/ENGINE.md`). v10 carries its own copy in its folder.
+- `tools/` has the local server, the build scripts (the standalone file, the live site) and the capture tools.
+- `teach/` holds the notes for the YouTube and course material: `journal.md`, `session-log.md` (each ask in Sam's words with what came back) and `decisions.md` (who brought which idea, and who decided).
 
-## 014 Flat 3D
+Built with Claude Code up to v8c (16 Oct 2026), then carried on with Gemini to v10.
 
-Landing pages built on one effect: the page opens on what looks like a flat
-illustration, and scrolling reveals it was a 3D world all along. The reference
-is the Medal of Honor: Above and Beyond site, recorded in `flat 3D.mp4`.
+## The live site (v10)
 
-## The pages
+**https://sam1983aing.github.io/lintel-live/**, live since 23 October 2026.
 
-| Folder | What it is | Status |
-|---|---|---|
-| `000 The Long Second` | Normandy village frozen in one second, 1944. Textures painted in code. The camera language every later page copies. | First iteration. Sam loves the depth and the camera, not the painted look. |
-| `001 Lintel` | Architecture studio. The floor plan of a house opens into a walk through it, room by room, and a roll of paper turns it back into the drawing. | Iteration 4 about to start, from `brief-iteration-4.md` (`v1/`, `v2/`, `v3a/`, `v3/` hold the earlier versions) |
-| `002 Hallworth Diorama` | Museum vitrine, swans lifting off a frozen lake. | Iteration 1 done. Parked. |
-| `003 Hotel Kyma` | A 1963 hotel postcard you step into. | Iteration 2 under way in its own session (iteration 1 kept in `v1/`) |
-| `004 The Last Keeper` | The last night a Cornish lighthouse has a keeper, 1983. | First full pass, reel in `recordings/` |
-| `005 The Floating World` | A woodblock print of the old coast road that opens into the real road. | First full pass, reel in `recordings/` |
-| `006 The Night Train` | The last run of a sleeper train, held on a viaduct at 23:58. | First full pass, parked |
-| `007 Rue One` | City e-bike in ligne claire. Goal: book a test ride. | First full pass, reel in `recordings/` |
-| `008 Aldren No. 1` | A mechanical watch as its own patent drawing, taken apart. Goal: reserve one of 300. | First full pass, reel in `recordings/` |
-| `009 Northfold Hollow 2` | A tent, one weekend, all cut paper. Goal: shop the tent. | First full pass, reel in `recordings/` |
+GitHub only serves Pages from a private repository on a paid plan, so the live page has its own public repository, https://github.com/Sam1983Aing/lintel-live, holding the page and nothing else (no briefs, no notes, no older versions). Its local copy is `publish/lintel-live/` (its own git repo, like casa-serra). `lintel-flat-2d` links to the site from its About box (it was private when the site was made, and public since 28 Oct).
 
-Sam's own portfolio (five options built here on 30 September) moved to `../0000 Portfolio` on 6 October, with its own copy of the engine.
+`tools/build-live.mjs` writes it from `001 Lintel/v10/`: the scripts minified with `tools/publish/strip.mjs`, comments out of the styles and the markup, the 14 photos alongside. To put a change online:
 
-## Shared folders
+```bash
+node tools/build-live.mjs
+```
 
-- `shared/` is the engine used by 001 to 009. `shared/ENGINE.md` documents it.
-- `assets/` holds the Poly Haven CC0 textures and skies.
-- `tools/` has the local server, the asset fetcher and the stills recorder.
-- `teach/lintel-3/` is the teaching pack for Lintel iteration 3 (overview, process, technique cards, video plan, four demos).
-- `teach/journal.md` is the running log of decisions for the YouTube and course material. Next to it, `teach/session-log.md` keeps each ask in Sam's words with what came back, and `teach/decisions.md` says who brought which idea and who decided (both start on 6 October 2026).
+```bash
+git -C publish/lintel-live add -A && git -C publish/lintel-live commit -m "what changed" && git -C publish/lintel-live push
+```
 
-## The working project on GitHub (private)
+Test it first the way GitHub serves it, from a sub-path and with exact case: `python3 tools/serve_publish.py 8015`, then http://localhost:8015/lintel-live/. GitHub Pages rebuilds in about a minute.
 
-This folder is its own git repository since 22 October 2026, pushed to the private
-https://github.com/Sam1983Aing/lintel-flat-2d (the public demo stays `casa-serra`, below).
+## The working project on GitHub (public since 28 Oct)
+
+This folder is its own git repository since 22 October 2026, pushed to
+https://github.com/Sam1983Aing/lintel-flat-2d (private until 28 October 2026, public since, on Sam's word) (the public demo stays `casa-serra`, below).
 It is not `lintel-source`: that one is the repository of `Claude Code/014 Flat 3D/` and its
 other flat-3D pages, and it stops at v8c. This one starts fresh at v10, with every frozen
 version inside it (`001 Lintel/v1/` to `001 Lintel/v10/`).
@@ -149,6 +143,4 @@ A change to the code alone needs only step 4. To test before a push, start the l
 python3 tools/serve.py
 ```
 
-Then open http://127.0.0.1:8014/ and pick a folder. 000 also works by
-double-clicking its `index.html`. The others need the server because they load
-photo textures.
+Then open http://127.0.0.1:8014/001%20Lintel/v10/. The page needs the server because it loads its scripts and photos. `lintel.html` opens without one.

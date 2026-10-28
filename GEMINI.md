@@ -1,7 +1,7 @@
 # Project Brief and Rules: Flat 2D / 001 Lintel (Gemini Workspace)
 
-**Workspace Root:** `/Users/sam/Projects/Landing Pages/Interactive 3D/002 Lintel Flat 2D`
-**Active Landing Page:** `/Users/sam/Projects/Landing Pages/Interactive 3D/002 Lintel Flat 2D/001 Lintel`
+**Workspace Root:** `/Users/sam/Projects/Landing Pages/Interactive 3D/008 Lintel Flat 2D`
+**Active Landing Page:** `/Users/sam/Projects/Landing Pages/Interactive 3D/008 Lintel Flat 2D/001 Lintel`
 
 ## 1. Sam's Global Rules (Read First)
 
@@ -20,7 +20,7 @@ Lintel (Casa Serra) is an interactive architectural landing page where a flat 1:
 - **V9 (`001 Lintel/`, `http://127.0.0.1:8014/001%20Lintel/`):** Completed Iteration 9 service landing page with the full-screen blueprint hero and all 3D room, garden, pool, lighting, curtain, and doorway refinements.
 - **V10 (`001 Lintel/v10/`, `http://127.0.0.1:8014/001%20Lintel/v10/`):** Isolated V10 workspace with its own `001 Lintel/v10/shared/` engine copy. Features the Dark Studio Workstation loader (`#loader` with `.loader__desk` and 4 live dataset counters), the dark smoked-walnut architect's desk (`deskSurface` in `001 Lintel/v10/shared/fx-post.js`), the 3D cylindrical paper roll-out (`deskUnroll` in `scene.js`), the `-3°` angled `A-101` blueprint sheet (`cardScale: 0.62`, `cardRot: -0.052`, `cardCenter: [0.655, 0.49]`), the left-column Hero layout (`html.on-desk`), and smooth scroll-in expansion (`s = 6..96`) into the 3D house walk.
 
-### Key Files in `/Users/sam/Projects/Landing Pages/Interactive 3D/002 Lintel Flat 2D`
+### Key Files in `/Users/sam/Projects/Landing Pages/Interactive 3D/008 Lintel Flat 2D`
 - `001 Lintel/v10/index.html` & `001 Lintel/v10/theme.css`: V10 Dark Studio Workstation loader, topbar (`Services / Craft / Practice / Team / Process` + `Start a Project`), left-hand desk Hero layout (`html.on-desk`), bottom-left Time-of-Day switcher (`Morning / Noon / Golden / Night`), 10-chapter service drawer (`.file`), and consultation Finale (`#finale`).
 - `001 Lintel/v10/shared/fx-post.js` & `001 Lintel/v10/shared/fx-experience.js`: V10 post-processing shader with `deskSurface(vUv)` (dark walnut planks, overhead studio lamp pool, drafting mat datum grid, and recessed brass metric scale rule), 3D unrolling paper cylinder (`cardUnroll`), angled blueprint sheet (`cardOn`, `cardScale`, `cardRot`, `cardCenter`, `cardBorder`), and live telemetry loader progress.
 - `001 Lintel/scene.js` & `001 Lintel/v10/scene.js` (3,833 lines): Room table (`ROOMS`), openings (`OPEN`), camera path (`KEYS`), 10-chapter service cards (`DOSSIERS`), `IS_V10` desk roll-out and scroll-in expansion (`deskUnroll`, `deskExpand`), planar-reflection pools (`buildPool`), and reverse ceiling disappearance on final ascent.
@@ -36,5 +36,5 @@ Lintel (Casa Serra) is an interactive architectural landing page where a flat 1:
 1. **Step 1 (Generate Visual Target):** Use the `image-generator` subagent to generate studio architectural reference photos (or seamless tileable textures) for any furniture piece or surface Sam wants to upgrade.
 2. **Step 2 (Multimodal Deconstruction):** Inspect the generated reference image with `view_file` to extract exact dimensional ratios, cushion loft, bevel radii, and micro-surface relief before editing `001 Lintel/staging.js` or `001 Lintel/code-materials.js`.
 3. **Step 3 (Shader & Geometry Upgrade):** Translate the reference into high-craft geometry in `staging.js` (bevelled profiles, spline extrusions, lathe curves) and multi-scale procedural or baked shaders in `code-materials.js` (or custom tileable textures if requested).
-4. **Step 4 (Live Verification):** Run `python3 tools/serve.py 8014` from `/Users/sam/Projects/Landing Pages/Interactive 3D/002 Lintel Flat 2D`, inspect at `http://127.0.0.1:8014/001%20Lintel/`, capture stills with `tools/probe.mjs` or `tools/room_closeups.py`, and verify zero new flicker with `tools/flicker.mjs`.
+4. **Step 4 (Live Verification):** Run `python3 tools/serve.py 8014` from `/Users/sam/Projects/Landing Pages/Interactive 3D/008 Lintel Flat 2D`, inspect at `http://127.0.0.1:8014/001%20Lintel/`, capture stills with `tools/probe.mjs` or `tools/room_closeups.py`, and verify zero new flicker with `tools/flicker.mjs`.
 

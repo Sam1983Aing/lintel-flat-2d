@@ -1,9 +1,9 @@
 # Brief: Iteration 9, Product & Service Landing Page UI + Load Optimization (Lintel)
 
 **Written:** 18 Oct 2026  
-**Workspace Root:** `/Users/sam/Projects/Landing Pages/Interactive 3D/002 Lintel Flat 2D`  
-**Active Landing Page:** `/Users/sam/Projects/Landing Pages/Interactive 3D/002 Lintel Flat 2D/001 Lintel`  
-**Frozen Iteration 8 Baseline:** `/Users/sam/Projects/Landing Pages/Interactive 3D/002 Lintel Flat 2D/001 Lintel/v8d`  
+**Workspace Root:** `/Users/sam/Projects/Landing Pages/Interactive 3D/008 Lintel Flat 2D`  
+**Active Landing Page:** `/Users/sam/Projects/Landing Pages/Interactive 3D/008 Lintel Flat 2D/001 Lintel`  
+**Frozen Iteration 8 Baseline:** `/Users/sam/Projects/Landing Pages/Interactive 3D/008 Lintel Flat 2D/001 Lintel/v8d`  
 
 Read `../GEMINI.md` and this file first.
 
@@ -117,7 +117,7 @@ Once Sam approves the UI and landing page copy:
 
 ## 7. First Step for the New Session
 
-1. Start the local server (`python3 tools/serve.py 8014` from `/Users/sam/Projects/Landing Pages/Interactive 3D/002 Lintel Flat 2D`).
+1. Start the local server (`python3 tools/serve.py 8014` from `/Users/sam/Projects/Landing Pages/Interactive 3D/008 Lintel Flat 2D`).
 2. Ask Sam two quick kickoff questions (or prototype the options visually right on `http://127.0.0.1:8014/001%20Lintel/`):
    - Which Time of Day (`morning`, `noon`, `golden`, `night`) should be the default on load, and should we include a small `Morning / Noon / Golden / Night` switcher pill in the HUD?
    - Does the 10-stop **Architecture + Build + Staging Studio** landing page map above match his vision for the cards, top navigation, and finale conversion section?

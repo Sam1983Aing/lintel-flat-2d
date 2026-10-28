@@ -1,6 +1,6 @@
 # Brief: Iteration 8, the house in code, refined room by room (Lintel)
 
-Written 15 Oct 2026 to start a fresh session, updated 17 Oct 2026 for the Gemini workspace (`/Users/sam/Projects/Landing Pages/Interactive 3D/002 Lintel Flat 2D`). We are at iteration 8, frozen as `v8c/`. Read `../GEMINI.md` and this file first, then `brief-code-house.md` (the whole plan and its progress line).
+Written 15 Oct 2026 to start a fresh session, updated 17 Oct 2026 for the Gemini workspace (`/Users/sam/Projects/Landing Pages/Interactive 3D/008 Lintel Flat 2D`). We are at iteration 8, frozen as `v8c/`. Read `../GEMINI.md` and this file first, then `brief-code-house.md` (the whole plan and its progress line).
 
 ## Where we are
 
@@ -13,7 +13,7 @@ Sam, 15 Oct: "I don't want any Poly Haven textures, everything should be in code
 - **No new blinking** on the walk: flicker numbers as the scans' at the patio, olive, gallery, garden, the rise and the top view.
 - **The outdoor olives keep the canvas leaves** (painted in code at load). The shader sprig leaf costs too much over thousands of cards. Indoors (living, entrance) the shader sprig stays.
 
-Preview (server: `python3 tools/serve.py 8014` from `002 Lintel Flat 2D/`, in a Terminal tab):
+Preview (server: `python3 tools/serve.py 8014` from `008 Lintel Flat 2D/`, in a Terminal tab):
 - the page: http://127.0.0.1:8014/001%20Lintel/
 - frozen: http://127.0.0.1:8014/001%20Lintel/v7a/
 - the old scans and sky, for comparing: http://127.0.0.1:8014/001%20Lintel/?code=none
